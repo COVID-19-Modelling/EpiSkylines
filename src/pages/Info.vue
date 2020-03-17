@@ -17,7 +17,7 @@
                 <h5>Email:</h5><p>c.ku@sheffield.ac.uk</p>
               </div>
               <div class="col-md-3">
-                <h5>Github:</h5><p><a href="https://github.com/TimeWz667">TimeWz667</a></p>
+                <h5>Github:</h5><p><a href="https://github.com/TimeWz667" target="_blank">TimeWz667</a></p>
               </div>
               <div class="col-md-6">
                 <h5>Study fields:</h5>
@@ -41,7 +41,7 @@
                 <h5>Email:</h5><p>XX@gmail.com</p>
               </div>
               <div class="col-md-3">
-                <h5>Github:</h5><p><a href="https://github.com/dachuwu">dachuwu</a></p>
+                <h5>Github:</h5><p><a href="https://github.com/dachuwu" target="_blank">dachuwu</a></p>
               </div>
               <div class="col-md-6">
                 <h5>Study fields:</h5>
@@ -70,10 +70,6 @@
           <h4 class="card-title">We thank...</h4>
         </template>
         <div class="content">
-          <div class="typo-line">
-            <h5>
-              <p class="category">XX</p> for XX</h5>
-          </div>
           <div class="typo-line">
             <h5>
               <p class="category"><a href="https://www.creative-tim.com/?ref=pdf-vuejs" target="_blank">&nbsp; Creative Tim.</a>

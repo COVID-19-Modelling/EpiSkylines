@@ -3,12 +3,12 @@
     <side-bar title="EpiSkylines">
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel"/>
-        <sidebar-link to="/table-list" name="Statistics" icon="ti-view-list-alt"/>
-        <sidebar-link to="/typography" name="Typography" icon="ti-text"/>
-        <sidebar-link to="/icons" name="Icons" icon="ti-pencil-alt2"/>
-        <sidebar-link to="/notifications" name="Useful links" icon="ti-bell"/>
+        <sidebar-link to="/table-list" name="A. Wuhan's lockdown" icon="ti-archive"/>
+        <sidebar-link to="/learn" name="Learn Epi (TBA)" icon="ti-key"/>
+        <sidebar-link to="#" name="Try modelling (TBA)" icon="ti-stats-up"/>
         <sidebar-link to="/resources" name="Resources" icon="ti-view-list-alt"/>
         <sidebar-link to="/info" name="About" icon="ti-user"/>
+        <!--<sidebar-link to="/icons" name="Icons" icon="ti-view-list-alt"/>-->
       </template>
       <mobile-menu>
         <li class="nav-item">
