@@ -11,6 +11,7 @@ import TableList from "@/pages/TableList.vue";
 import Resources from "@/pages/Resources";
 import Info from "@/pages/Info";
 import LearnEpi from "@/pages/LearnEpi";
+import WuhanLockdown from "@/pages/WuhanLockdown";
 
 const routes = [
   {
@@ -22,6 +23,11 @@ const routes = [
         path: "dashboard",
         name: "dashboard",
         component: Dashboard
+      },
+      {
+        path: "wuhanlockdown",
+        name: "wuhanlockdown",
+        component: WuhanLockdown
       },
       {
         path: "resources",

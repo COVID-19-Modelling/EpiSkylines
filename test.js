@@ -35,3 +35,10 @@ axios.get("https://raw.githubusercontent.com/COVID-19-Modelling/Bass-COVID-19/ma
     console.log(dat)
   });
 
+axios.get("https://raw.githubusercontent.com/COVID-19-Modelling/Bass-COVID-19/master/Output/JSON/EpiIndices.json")
+  .then(res => {
+
+    dat = res.data.filter(d => ["R0", "R(t)"].indexOf(d.variable)  >= 0);
+
+    console.log(dat)
+  });
