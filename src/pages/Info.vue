@@ -22,9 +22,9 @@
               <div class="col-md-6">
                 <h5>Study fields:</h5>
                 <ol>
-                  <li>Spatial analysis</li>
+                  <li>Health economics</li>
                   <li>Infectious disease modelling</li>
-                  <li>Disease burden</li>
+                  <li>Time-series analysis</li>
                 </ol>
               </div>
             </div>
@@ -48,7 +48,7 @@
                 <ol>
                   <li>Spatial analysis</li>
                   <li>Infectious disease modelling</li>
-                  <li>Spatial analysis</li>
+                  <li>Disease burden</li>
                 </ol>
               </div>
             </div>

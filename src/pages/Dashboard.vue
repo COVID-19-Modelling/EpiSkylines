@@ -74,6 +74,7 @@
 <script>
 import { StatsCard, ChartCard } from "@/components/index";
 import Chartist from 'chartist';
+
 export default {
   components: {
     StatsCard,
@@ -88,7 +89,7 @@ export default {
         {
           type: "warning",
           icon: "ti-pulse",
-          title: "Confirmed",
+          title: "Total confirmed",
           value: "214,894",
           footerText: "Updated now",
           footerIcon: "ti-time"
