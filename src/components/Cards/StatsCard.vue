@@ -14,7 +14,6 @@
         <slot name="footer"></slot>
       </div>
     </div>
-
   </card>
 </template>
 <script>
