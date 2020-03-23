@@ -8,6 +8,7 @@ import Card from "./Cards/Card.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 import D3Card from "./Cards/D3Card.vue";
+import MarkdownCard from "./Cards/MarkdownCard.vue";
 
 import SidebarPlugin from "./SidebarPlugin/index";
 
@@ -18,6 +19,7 @@ let components = {
   StatsCard,
   PaperTable,
   D3Card,
+  MarkdownCard,
   DropDown,
   SidebarPlugin
 };
@@ -30,6 +32,7 @@ export {
   ChartCard,
   StatsCard,
   D3Card,
+  MarkdownCard,
   PaperTable,
   DropDown,
   Button,

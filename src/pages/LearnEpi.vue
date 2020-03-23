@@ -7,21 +7,28 @@
           </card>
         </b-tab>
         <b-tab title="Risk Perception">
-          <card title="Risk Perception">
-
-          </card>
+          <markdown-card
+              title="Risk Perception"
+              :source="page2"></markdown-card>
         </b-tab>
       </b-tabs>
     </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      pages: []
-    };
-  }
-};
+  import { MarkdownCard, Card } from "@/components";
+
+  export default {
+    components: {
+      MarkdownCard,
+      Card
+    },
+    data() {
+      return {
+        page2: "### Hi",
+        pages: []
+      };
+    }
+  };
 </script>
 <style>
 </style>

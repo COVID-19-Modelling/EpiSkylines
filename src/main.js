@@ -21,8 +21,12 @@ import PaperDashboard from "./plugins/paperDashboard";
 import BootstrapVue from "bootstrap-vue";
 import "vue-notifyjs/themes/default.css";
 import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap-vue/dist/bootstrap-vue.css"
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
+import VueSimpleMarkdown from "vue-simple-markdown";
+import "vue-simple-markdown/dist/vue-simple-markdown.css"
+
+Vue.use(VueSimpleMarkdown);
 Vue.use(PaperDashboard);
 Vue.use(BootstrapVue);
 
