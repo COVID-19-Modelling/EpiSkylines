@@ -3,7 +3,7 @@
     <div class="col-md-12 col-xl-6">
       <card>
         <template slot="header">
-          <h4 class="card-title">More models</h4>
+          <h4 class="card-title">More science and models about COVID-19</h4>
           <p class="card-category">Modelling resources</p>
         </template>
         <div class="content">

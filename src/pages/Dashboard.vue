@@ -21,7 +21,7 @@
     <!--Charts-->
     <div class="row">
       <div class="col-md-3 col-12">
-        <d3-card title="COVID status"
+        <d3-card title="COVID-19 status"
                  sub-title=""
                  :chart-data="statusChart.data"
                  :draw-chart="statusChart.init"
@@ -35,7 +35,7 @@
         </d3-card>
       </div>
       <div class="col-md-9 col-12">
-        <d3-card title="COVID time-series"
+        <d3-card title="COVID-19 time-series"
                  sub-title=""
                  :chart-data="trendChart.data"
                  :draw-chart="trendChart.init"
@@ -247,6 +247,7 @@ export default {
         const data = tables.map(res => {
           const dat = res.data.split("\n").map(d => d.split(",").slice(4));
           const cols = dat[0].map(d => {
+            d = d.replace(/\s+/, "");
             let ds = d.split("/");
             return [("0" + ds[0]).slice(-2), ("0" + ds[1]).slice(-2), ("20" + ds[2]).slice(-4)].join("/");
             });

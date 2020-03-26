@@ -1,16 +1,17 @@
 <template>
   <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-4">
+      <markdown-card
+          title="Modelling purpose"
+          url=""></markdown-card>
+    </div>
+    <div class="col-md-8">
       <card title="R0 vs. R(t)" subTitle="t = 12th February">
         <div id="r0rt">
         </div>
       </card>
     </div>
-    <div class="col-md-3">
-      <card title="Model" subTitle="">
 
-      </card>
-    </div>
     <div class="col-12">
       <card title="Parameter estimation" subTitle="based on Bass-SIR model">
         <div class="table-full-width table-responsive">
@@ -26,12 +27,13 @@
 import axios from "axios";
 import _ from "lodash";
 import * as d3 from "d3";
-import { PaperTable } from "@/components";
+import { PaperTable, MarkdownCard } from "@/components";
 
 export default {
   name: "Estimators",
   components: {
-    PaperTable
+    PaperTable,
+    MarkdownCard
   },
   data() {
     return {
