@@ -86,7 +86,8 @@ export default {
       xAxis: null,
       yAxis: null,
       width: null,
-      height: null
+      height: null,
+      colours: null
     };
   },
   watch: {
@@ -124,7 +125,7 @@ export default {
       this.height = height;
       const margin = this.margin;
       if (this.x !== null) {
-        this.x.range([margin.left, width - margin.right]);
+        this.x.range([self.margin.left, self.width - self.margin.right]);
       }
       if (this.y !== null) {
         this.y.range([height - margin.bottom, margin.top]);

@@ -6,22 +6,9 @@
           {{title}}
         </slot>
       </h4>
-      <p class="card-category">
-        <slot name="subTitle">
-          {{subTitle}}
-        </slot>
-      </p>
     </template>
     <div>
-      <vue-simple-markdown :source="raw"></vue-simple-markdown>
-      <div class="footer">
-        <hr>
-        <div class="stats">
-          <slot name="footer"></slot>
-        </div>
-        <div class="pull-right">
-        </div>
-      </div>
+      <iframe src="/si_tw/Plot_EpiCurveConfirm.html" style="width: 100%; height: 500pt"></iframe>
     </div>
   </card>
 </template>
@@ -30,7 +17,7 @@
   import axios from "axios";
 
   export default {
-    name: "markdown-card",
+    name: "html-card",
     components: {
       Card
     },
@@ -47,30 +34,21 @@
         type: String,
         default: ""
       },
-      source: {
-        type: String,
-        default: "# Hello"
-      },
-      url: {
+      path: {
         type: String,
         default: ""
       }
     },
     data() {
       return {
-        raw: this.source
+        rawHTML: "<p>找不到啦! 是在 hello</p>"
       }
     },
     mounted() {
-      if (this.url !== "") {
-        axios.get(this.url)
-          .then(res => {
-            this.raw = res.data;
-          })
-          .catch(() => {
-            this.raw = this.source;
-          })
-      }
+      axios.get("https://raw.githubusercontent.com/COVID-19-Modelling/DashboardData/master/Epi_plots/Plot_Incubation.html")
+        .then(res => {
+          this.rawHTML = res.data;
+        });
 
     }
   };
