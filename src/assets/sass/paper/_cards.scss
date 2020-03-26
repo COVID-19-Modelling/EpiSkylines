@@ -113,20 +113,20 @@
   }
 
   .ct-chart {
-    margin: 30px 0 30px;
-    height: 245px;
+    margin: 10px 0 10px;
+    height: 330px;
   }
 
   .table {
 		tbody td:first-child,
 		tfoot th:first-child, tfoot td:first-child,
-		thead th:first-child, thead td:first-child, {
+		thead th:first-child, thead td:first-child {
 			padding-left: 15px;
 		}
 
 		tbody td:last-child,
 		tfoot th:last-child, tfoot td:last-child,
-		thead th:last-child, thead td:last-child, {
+		thead th:last-child, thead td:last-child {
 			padding-right: 15px;
 		}
 	}
@@ -208,7 +208,7 @@
     margin-top: 10px;
   }
   .card-body {
-    min-height: 200px;
+    min-height: 260px;
   }
 
   &.card-plain {
