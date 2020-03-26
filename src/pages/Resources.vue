@@ -55,13 +55,13 @@ export default {
   },
   methods: {
     fetchPapers() {
-      axios.get("https://raw.githubusercontent.com/COVID-19-Modelling/DashboardData/master/Resources/papers.json")
+      axios.get("https://covid-19-modelling.github.io/DashboardData/Resources/papers.json")
         .then(res => {
           this.papers = res.data;
         });
     },
     fetchDatabases() {
-      axios.get("https://raw.githubusercontent.com/COVID-19-Modelling/DashboardData/master/Resources/dbs.json")
+      axios.get("https://covid-19-modelling.github.io/DashboardData/Resources/dbs.json")
         .then(res => {
           this.dbs = res.data;
         });

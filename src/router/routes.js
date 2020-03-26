@@ -12,6 +12,7 @@ import Resources from "@/pages/Resources";
 import Info from "@/pages/Info";
 import LearnEpi from "@/pages/LearnEpi";
 import WuhanLockdown from "@/pages/WuhanLockdown";
+import SerialInterval from "@/pages/SerialInterval";
 
 const routes = [
   {
@@ -28,6 +29,11 @@ const routes = [
         path: "wuhanlockdown",
         name: "wuhanlockdown",
         component: WuhanLockdown
+      },
+      {
+        path: "serial",
+        name: "serial",
+        component: SerialInterval
       },
       {
         path: "resources",

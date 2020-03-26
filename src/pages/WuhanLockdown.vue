@@ -4,6 +4,12 @@
       <b-tab title="Estimators" active>
         <estimators></estimators>
       </b-tab>
+
+      <b-tab title="Forecasts" lazy>
+        <prevalence></prevalence>
+      </b-tab>
+
+
       <b-tab title="The effect of lockdown">
 
       </b-tab>
@@ -12,10 +18,12 @@
 </template>
 <script>
 import Estimators from "./StudyA/Estimators";
+import Prevalence from "./StudyA/Prevalence";
 
 export default {
   components: {
-    Estimators
+    Estimators,
+    Prevalence
   }
 };
 </script>
