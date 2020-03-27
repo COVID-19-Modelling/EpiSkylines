@@ -42,7 +42,7 @@ export default {
     },
     closeDropDown() {
       this.isOpen = false;
-      this.$emit('change', false);
+      this.$emit("change", false);
     }
   }
 };

@@ -76,7 +76,7 @@ export default {
         {
           type: "danger",
           icon: "ti-wallet",
-          title: "Total death",
+          title: "Total deaths",
           value: "8,732",
           footerText: "Updating",
           footerIcon: "ti-time"
