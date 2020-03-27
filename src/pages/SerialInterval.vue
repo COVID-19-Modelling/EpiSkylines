@@ -13,7 +13,8 @@
                     </div>
                     <div class="numbers" slot="content">
                       <p>{{stats.title}}</p>
-                      {{stats.value}}
+                      <span>{{stats.value}}</span><br>
+                      <span class="subvalue" v-if="stats.subvalue !== undefined">{{ stats.subvalue }}</span>
                     </div>
                     <div class="stats" slot="footer">
                       <i :class="stats.footerIcon"></i> {{stats.footerText}}
@@ -114,7 +115,7 @@
           {
             type: "danger",
             icon: "ti-pulse",
-            title: "Total deaths/recovered",
+            title: "Total deaths",
             value: "0/0",
             footerText: "All time",
             footerIcon: "ti-time"
@@ -154,10 +155,10 @@
         ],
         sourceKey: this.lang === "en"?
           "https://covid-19-modelling.github.io/DashboardData/Docs/SerialInterval_Key_en.md":
-          "https://covid-19-modelling.github.io/DashboardData/Docs/SerialInterval_Key_en.md",
+          "https://covid-19-modelling.github.io/DashboardData/Docs/SerialInterval_Key_zh.md",
         sourceMethod: this.lang === "en"?
           "https://covid-19-modelling.github.io/DashboardData/Docs/SerialInterval_Method_en.md":
-          "https://covid-19-modelling.github.io/DashboardData/Docs/SerialInterval_Method_en.md"
+          "https://covid-19-modelling.github.io/DashboardData/Docs/SerialInterval_Method_zh.md"
       };
     },
     watch: {
@@ -179,16 +180,54 @@
           .then(res => {
             const src = res.data;
 
-            this.statsCards[0].value = src.Confirmed.Total;
-            this.statsCards[1].value = `${src.Deaths.Total}/${src.Recovered.Total}`;
             const si = src["Serial Interval"].Week;
             this.statsCards[2].value = `${si.mean} (${si.lower}-${si.upper})`;
             const rt = src.Rt.Week;
             this.statsCards[3].value = `${rt.mean} (${rt.lower}-${rt.upper})`;
-            this.statsCards[4].value = src.PercentageImport.Week;
-            const y = src.YieldRate.Week;
-            this.statsCards[5].value = `${y.Yield} (${y.N_tested} tested)`;
+            // this.statsCards[4].value = src.PercentageImport.Week;
           });
+
+        axios.get("https://covid19dashboard.cdc.gov.tw/dash3")
+          .then(res => {
+            const src = res.data[0];
+            this.statsCards[0].value = src["確診"];
+            this.statsCards[1].value = src.死亡;
+          });
+
+        axios.all([
+          axios.get("https://covid19dashboard.cdc.gov.tw/dash4"),
+          axios.get("https://covid19dashboard.cdc.gov.tw/dash5")
+        ]).then(tables => {
+          const now = new Date();
+
+          let res = Object.values(tables[1].data);
+          let tests = Object.values(tables[0].data);
+
+          res = res.filter(d => {
+            let time = d['發病日'].split("/");
+            time = new Date(2020, + time[0] - 1, time[1]);
+            return now > time;
+          });
+
+          tests = tests.filter(d => {
+            let time = d['通報日'].split("/");
+            time = new Date(2020, + time[0] - 1, time[1]);
+            return now > time;
+          });
+
+          let out = res.reduce((a, b) => a + b["境外移入"], 0), dom = res.reduce((a, b) => a + b["本土感染"], 0);
+          let tested = tests.reduce((a, b) => a + b.Total, 0);
+          this.statsCards[4].subvalue = `All time ${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
+          this.statsCards[5].subvalue = `All time ${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
+
+
+          res = res.slice(-7); tests = tests.slice(-7);
+          out = res.reduce((a, b) => a + b["境外移入"], 0); dom = res.reduce((a, b) => a + b["本土感染"], 0);
+          tested = tests.reduce((a, b) => a + b.Total, 0);
+          this.statsCards[4].value = `${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
+          this.statsCards[5].value = `${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
+        });
+
       }
     }
   };
@@ -197,5 +236,8 @@
   .si-chart {
     width: 100%;
     height: 500pt;
+  }
+  .subvalue {
+    font-size: 70%;
   }
 </style>
