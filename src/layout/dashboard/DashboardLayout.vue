@@ -3,9 +3,9 @@
     <side-bar title="EpiSkylines">
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel"/>
-        <sidebar-link to="/wuhanlockdown" name="A. Wuhan's lockdown" icon="ti-archive"/>
-        <sidebar-link to="/serial" name="B. SI in Taiwan" icon="ti-key"/>
-        <sidebar-link to="/learn" name="Learn Epi (TBA)" icon="ti-key"/>
+        <sidebar-link to="/serial" name="Serial Intervals" icon="ti-key"/>
+        <sidebar-link to="/wuhanlockdown" name="Wuhan's lockdown" icon="ti-archive"/>
+        <sidebar-link to="/learn" name="Learn Epi" icon="ti-key"/>
         <sidebar-link to="#" name="Try modelling (TBA)" icon="ti-stats-up"/>
         <sidebar-link to="/resources" name="Resources" icon="ti-view-list-alt"/>
         <sidebar-link to="/info" name="About" icon="ti-user"/>
