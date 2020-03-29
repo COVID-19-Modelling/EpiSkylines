@@ -13,7 +13,7 @@
       </p>
     </template>
     <div>
-      <vue-simple-markdown :source="raw"></vue-simple-markdown>
+      <vue-simple-markdown :source="raw" :postrender="postRender"></vue-simple-markdown>
       <div class="footer">
         <hr>
         <div class="stats">
@@ -58,7 +58,8 @@
     },
     data() {
       return {
-        raw: this.source
+        raw: this.source,
+        mathreg: /\\\[([\s*\w\-{}()\\+?#=.:]+)\\]/g
       }
     },
     mounted() {
@@ -71,7 +72,19 @@
             this.raw = this.source;
           })
       }
-
+    },
+    methods: {
+      postRender(source) {
+        source = this.parseMath(source);
+        return source;
+      },
+      parseMath(source) {
+        return source.replace(this.mathreg, (match, src) => {
+          console.log(src);
+          src = src.replace(/\s+/g, "%20");
+          return `<img src="http://latex.codecogs.com/svg.latex?${src}">`
+        })
+      }
     }
   };
 </script>

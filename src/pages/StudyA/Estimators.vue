@@ -2,8 +2,7 @@
   <div class="row">
     <div class="col-md-4">
       <markdown-card
-          title="Modelling purpose"
-          url=""></markdown-card>
+          title="Modelling purpose"></markdown-card>
     </div>
     <div class="col-md-8">
       <card title="R0 vs. R(t)" subTitle="t = 12th February">

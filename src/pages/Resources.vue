@@ -14,7 +14,6 @@
                   <a :href="paper.Link" target="_blank">{{paper.Name}}</a></h4>
               </div>
             </div>
-
           </div>
         </div>
       </card>

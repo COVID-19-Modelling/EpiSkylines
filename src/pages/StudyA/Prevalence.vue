@@ -3,7 +3,6 @@
     <div class="col-md-2">
       <card title="Provence profile" subTitle="">
         <b-form-select v-model="selected" :options="provinces"></b-form-select>
-        <div class="mt-3">Selected: <strong>{{ selected }}</strong></div>
       </card>
     </div>
     <div class="col-md-5">

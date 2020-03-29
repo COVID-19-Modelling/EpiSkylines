@@ -23,9 +23,8 @@
         <prevalence></prevalence>
       </b-tab>
 
-
-      <b-tab title="The effect of lockdown">
-
+      <b-tab title="The effect of lockdown" lazy>
+        <lockdown></lockdown>
       </b-tab>
       <b-tab title="Methods" lazy>
         <div class="row">
@@ -42,12 +41,14 @@
 <script>
 import Estimators from "./StudyA/Estimators";
 import Prevalence from "./StudyA/Prevalence";
+import Lockdown from "./StudyA/Lockdown";
 import { MarkdownCard } from "@/components/index";
 
 export default {
   components: {
     Estimators,
     Prevalence,
+    Lockdown,
     MarkdownCard
   },
   props: {

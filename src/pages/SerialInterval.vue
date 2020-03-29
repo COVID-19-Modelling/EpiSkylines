@@ -22,7 +22,10 @@
                   </stats-card>
                 </div>
               </div>
-
+              <div slot="footer">
+                The surveillance data are synchronised
+                <a href="https://sites.google.com/cdc.gov.tw/2019ncov/taiwan?authuser=0" target="_blank">Taiwan CDC dashboard</a>
+              </div>
             </card>
           </div>
           <div class="col-md-4">
@@ -125,7 +128,7 @@
             icon: "ti-control-shuffle",
             title: "Serial Interval",
             value: "",
-            footerText: "Weekly average",
+            footerText: "Weekly average with 95% credible interval",
             footerIcon: "ti-time"
           },
           {
@@ -133,13 +136,13 @@
             icon: "ti-move",
             title: "Effective reproduction number",
             value: "0",
-            footerText: "Weekly average",
+            footerText: "Weekly average with 95% credible interval",
             footerIcon: "ti-time"
           },
           {
             type: "success",
             icon: "ti-cloud",
-            title: "Import cases, weekly",
+            title: "Imported cases, weekly",
             value: "100%",
             footerText: "Weekly average",
             footerIcon: "ti-time"
@@ -190,7 +193,7 @@
         axios.get("https://covid19dashboard.cdc.gov.tw/dash3")
           .then(res => {
             const src = res.data[0];
-            this.statsCards[0].value = src["確診"];
+            this.statsCards[0].value = src.確診;
             this.statsCards[1].value = src.死亡;
           });
 
@@ -204,25 +207,25 @@
           let tests = Object.values(tables[0].data);
 
           res = res.filter(d => {
-            let time = d['發病日'].split("/");
+            let time = d["發病日"].split("/");
             time = new Date(2020, + time[0] - 1, time[1]);
             return now > time;
           });
 
           tests = tests.filter(d => {
-            let time = d['通報日'].split("/");
+            let time = d["通報日"].split("/");
             time = new Date(2020, + time[0] - 1, time[1]);
             return now > time;
           });
 
-          let out = res.reduce((a, b) => a + b["境外移入"], 0), dom = res.reduce((a, b) => a + b["本土感染"], 0);
+          let out = res.reduce((a, b) => a + b.境外移入, 0), dom = res.reduce((a, b) => a + b.本土感染, 0);
           let tested = tests.reduce((a, b) => a + b.Total, 0);
           this.statsCards[4].subvalue = `All time ${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
           this.statsCards[5].subvalue = `All time ${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
 
 
           res = res.slice(-7); tests = tests.slice(-7);
-          out = res.reduce((a, b) => a + b["境外移入"], 0); dom = res.reduce((a, b) => a + b["本土感染"], 0);
+          out = res.reduce((a, b) => a + b.境外移入, 0); dom = res.reduce((a, b) => a + b.本土感染, 0);
           tested = tests.reduce((a, b) => a + b.Total, 0);
           this.statsCards[4].value = `${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
           this.statsCards[5].value = `${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
