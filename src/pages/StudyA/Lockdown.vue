@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-md-2">
-      <card title="Provence" subTitle="">
+      <card title="Provence" subTitle="" style="height: 400pt;">
         <b-form-select v-model="selected" :options="provinces"></b-form-select>
         <div class="mt-3">Proportion of exogenous infection:</div>
         <strong>{{ selectedData[0] }}</strong>
@@ -118,12 +118,16 @@ export default {
               },
               update => {
                 update.selectAll("circle")
+                  .transition()
+                  .duration(300)
                   .attr("cx", d => self.x(d.mean))
                   .attr("cy", d => self.y(d.Location))
                   .attr("r", d => d.Location === self.chartData.selected? 6: 3)
                   .style("fill", d => d.Location === self.chartData.selected? "#f00": "black");
 
                 update.selectAll("line")
+                  .transition()
+                  .duration(300)
                   .attr("x1", d => self.x(d.lower))
                   .attr("x2", d => self.x(d.upper))
                   .attr("y1", d => self.y(d.Location))
@@ -206,12 +210,16 @@ export default {
               },
               update => {
                 update.selectAll("circle")
+                  .transition()
+                  .duration(300)
                   .attr("cx", d => self.x(d.mean))
                   .attr("cy", d => self.y(d.Location))
                   .attr("r", d => d.Location === self.chartData.selected? 6: 3)
                   .style("fill", d => d.Location === self.chartData.selected? "#f00": "black");
 
                 update.selectAll("line")
+                  .transition()
+                  .duration(300)
                   .attr("x1", d => self.x(d.lower))
                   .attr("x2", d => self.x(d.upper))
                   .attr("y1", d => self.y(d.Location))

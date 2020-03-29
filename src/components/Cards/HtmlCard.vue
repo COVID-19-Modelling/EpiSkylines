@@ -8,7 +8,7 @@
       </h4>
     </template>
     <div>
-      <iframe src="/si_tw/Plot_EpiCurveConfirm.html" style="width: 100%; height: 500pt"></iframe>
+      <iframe src="/si_tw/Plot_EpiCurveConfirm.html" style="width: 100%; height: 400pt"></iframe>
     </div>
   </card>
 </template>

@@ -13,7 +13,10 @@
       </p>
     </template>
     <div>
-      <vue-simple-markdown :source="raw" :postrender="postRender"></vue-simple-markdown>
+      <div class="md-body">
+        <vue-simple-markdown :source="raw" :postrender="postRender"></vue-simple-markdown>
+      </div>
+
       <div class="footer">
         <hr>
         <div class="stats">
@@ -89,4 +92,8 @@
   };
 </script>
 <style>
+  .md-body {
+    overflow-y: auto;
+    height: 400pt;
+  }
 </style>

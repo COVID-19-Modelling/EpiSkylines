@@ -8,6 +8,7 @@ import Card from "./Cards/Card.vue";
 import ChartCard from "./Cards/ChartCard.vue";
 import StatsCard from "./Cards/StatsCard.vue";
 import D3Card from "./Cards/D3Card.vue";
+import ForestVCard from "./Cards/ForestVCard.vue";
 import MarkdownCard from "./Cards/MarkdownCard.vue";
 import HtmlCard from "./Cards/HtmlCard.vue";
 
@@ -21,6 +22,7 @@ let components = {
   PaperTable,
   D3Card,
   MarkdownCard,
+  ForestVCard,
   HtmlCard,
   DropDown,
   SidebarPlugin
@@ -34,6 +36,7 @@ export {
   ChartCard,
   StatsCard,
   D3Card,
+  ForestVCard,
   MarkdownCard,
   HtmlCard,
   PaperTable,
