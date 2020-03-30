@@ -93,16 +93,16 @@ export default {
         },
         {
           type: "info",
-          icon: "ti-pulse",
-          title: "",
+          icon: "ti-control-forward",
+          title: "Doubling Time",
           value: "",
-          footerText: "Updating",
+          footerText: "Since today",
           footerIcon: "ti-time"
         }
       ],
       trendChart: {
         data: {series: []},
-        margin: {top: 10, right: 30, bottom: 50, left: 100},
+        margin: {top: 5, right: 15, bottom: 80, left: 70},
         init: function(self) {
           self.x = d3
             .scaleTime()
@@ -115,11 +115,12 @@ export default {
 
           self.xAxis = g => g
             .attr("transform", `translate(0,${self.height - self.margin.bottom})`)
-            .call(d3.axisBottom(self.x).tickFormat(d3.timeFormat("%d-%m-%Y")));
+            .call(d3.axisBottom(self.x).tickFormat(d3.timeFormat("%d-%b")));
 
           self.yAxis = g => g
             .attr("transform", `translate(${self.margin.left},0)`)
-            .call(d3.axisLeft(self.y).ticks(self.width / 80).tickSizeOuter(0));
+            .call(d3.axisLeft(self.y).ticks(10)
+              .tickFormat(d3.format(".0s")));
 
           self.svg.append("g").attr("class", "xAxis").call(self.xAxis);
 
@@ -133,6 +134,7 @@ export default {
             .style("text-anchor", "middle")
             .text("Date");
 
+
           self.svg
             .append("text")
             .attr("class", "yLab")
@@ -145,7 +147,7 @@ export default {
 
           self.colours = d3.scaleOrdinal()
             .domain(["Confirmed", "Deaths", "Recovered"])
-            .range(["#fff640", "#a63724", "#97ff70"]);;
+            .range(["#fff640", "#a6333d", "#97ff70"]);;
 
           self.update();
         },
@@ -160,7 +162,13 @@ export default {
             .select("g.xAxis")
             .transition()
             .duration(100)
-            .call(self.xAxis);
+            .call(self.xAxis)
+            .selectAll("text")
+            .attr("y", 10)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(45)")
+            .style("text-anchor", "start");
 
           self.svg
             .select("g.yAxis")
@@ -189,8 +197,10 @@ export default {
           });
 
           // pie
-          self.g.attr("transform", "translate(" + ((self.width- self.margin.left) / 3 + self.margin.left) + "," + self.height / 3 + ")");
-          const radius = Math.min(self.width, self.height) / 4.5;
+          self.g.attr("transform", "translate(" + ((self.width - self.margin.left - self.margin.right) / 3 + self.margin.left) + "," + self.height / 3 + ")");
+          const radius = Math.min(
+            self.width - self.margin.left - self.margin.right,
+            self.height - self.margin.top - self.margin.bottom) / 6;
 
           const pie = d3.pie()
             .value(function(d) { return d.value; })
@@ -235,7 +245,8 @@ export default {
           self.svg.append("text")
             .attr("class", "tooltip").attr("transform", `translate(15, 20)`)
             .attr("font-size", "30pt")
-            .text("click to pick up a country").style("opacity", 1);
+            .text("click to pick up a country")
+            .style("opacity", 1);
 
         },
         update(self) {
@@ -244,11 +255,13 @@ export default {
             .domain(self.chartData.burden.map(d => d.Location));
 
           const selected = self.chartData.selected;
+          self.svg.select("text.tooltip").transition()
+            .duration(200)
+            .text("click to pick up a country");
 
           const data = {
             Location: "World",
-            children: self.chartData.burden //.sort((a, b) => d3.descending(a[selected], b[selected]))
-              //.filter((d, i) => i < self.chartData.n)
+            children: self.chartData.burden
           };
 
           const root = d3.hierarchy(data, (d) => d.children)
@@ -270,12 +283,9 @@ export default {
                   .style("stroke", "black")
                   .style("fill", d => self.colours(d.data.Location))
                   .on("click", d => {
-
                     self.svg.select("text.tooltip").transition()
                       .duration(200)
-                      .text(d.data.Location + ", Confirmed "  + d.data.Confirmed.toLocaleString('en-us') +
-                            ", Active cases "  + d.data.Active.toLocaleString('en-us') +
-                            ", Deaths "  + d.data.Deaths.toLocaleString('en-us'));
+                      .text(d.data.Location + ", " + self.chartData.selected + " " + d.value.toLocaleString('en-us'));
                   }))
                 .call(gp => gp.append("text")
                   .attr("x", d => d.x0 + 10)
@@ -355,6 +365,12 @@ export default {
           }
         };
 
+        this.statsCards[3].value = (() => {
+          const ds = data[0].Series.slice(-3);
+          const gr = (Math.log(ds[2]) - Math.log(ds[0])) / 2;
+          console.log(gr)
+          return (Math.log(2) / gr).toFixed(1) + " Days";
+        })();
 
         const lastday = tables.map(res => {
           const dat = res.data.split("\n").map(d => + d.split(",").slice(-1)[0]).slice(1);
@@ -399,8 +415,8 @@ export default {
     color: #fff640;
   }
   .legend-deaths {
-    fill: #a63724;
-    color: #a63724
+    fill: #a6333d;
+    color: #a6333d
   }
   .legend-recovered {
     fill: #97ff70;
