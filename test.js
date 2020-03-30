@@ -1,25 +1,32 @@
 var axios = require("axios");
-var _ = require("lodash");
 var d3 = require("d3");
 let dat;
 
+const url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/";
+axios.all([
+  axios.get(url + "time_series_covid19_confirmed_global.csv"),
+  axios.get(url + "time_series_covid19_deaths_global.csv"),
+  axios.get(url + "time_series_covid19_recovered_global.csv")
+]).then(tables => {
 
+  const data = tables.map(res => {
+    const dat = res.data.split("\n").map(d => + d.split(",").slice(-1)[0]).slice(1);
+    const countries = res.data.split("\n").map(d => d.split(",")[1]).slice(1);
+    let ds = [];
+    for (let i = 0; i < countries.length; i++) {
+      ds.push({ N: dat[i], Location: countries[i]})
+    }
+    return d3.nest().key(d => d.Location).rollup(vs => d3.sum(vs, d => d.N)).object(ds);
+  });
 
-
-axios.get("https://covid19dashboard.cdc.gov.tw/dash5")
-  .then(res => {
-    let src = Object.values(res.data);
-    const now = new Date();
-
-    src = src.filter(d => {
-      let time = d['發病日'].split("/");
-      time = new Date(2020, + time[0] - 1, time[1]);
-      return now > time;
-    });
-    console.log(src);
-    //total = src.reduce((a, b) => a + b.本土感染, 0) / src.reduce((a, b) => a + b.境外移入, 0);
-    src = src.slice(-7);
-    let out = src.reduce((a, b) => a + b["境外移入"], 0), dom = src.reduce((a, b) => a + b["本土感染"], 0);
-
-
-  })
+  const res = d3.keys(data[0]).map(k => {
+    let c = data[0][k] || 0, d = data[1][k] || 0, r = data[2][k] || 0;
+    return {
+      Location: k,
+      Confirmed: c,
+      Active: c - d - r,
+      Deaths: d
+    }
+  });
+console.log(res)
+});
