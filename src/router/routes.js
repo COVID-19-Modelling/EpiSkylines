@@ -7,12 +7,13 @@ import Dashboard from "@/pages/Dashboard.vue";
 import Icons from "@/pages/Icons.vue";
 import Maps from "@/pages/Maps.vue";
 import Typography from "@/pages/Typography.vue";
-import TableList from "@/pages/TableList.vue";
 import Resources from "@/pages/Resources";
 import Info from "@/pages/Info";
 import LearnEpi from "@/pages/LearnEpi";
 import WuhanLockdown from "@/pages/WuhanLockdown";
 import SerialInterval from "@/pages/SerialInterval";
+import Modelling from "@/pages/Modelling";
+
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
         component: SerialInterval
       },
       {
+        path: "modelling",
+        name: "modelling",
+        component: Modelling
+      },
+      {
         path: "resources",
         name: "resources",
         component: Resources
@@ -51,6 +57,11 @@ const routes = [
         component: LearnEpi
       },
       {
+        path: "maps",
+        name: "maps",
+        component: Maps
+      },
+      {
         path: "icons",
         name: "icons",
         component: Icons
@@ -64,11 +75,6 @@ const routes = [
         path: "typography",
         name: "typography",
         component: Typography
-      },
-      {
-        path: "table-list",
-        name: "table-list",
-        component: TableList
       }
     ]
   },

@@ -126,9 +126,9 @@ export default {
           enter.append("button")
             .attr("type", "button")
             .attr("class", "btn btn-lg")
-            .text(col => col)
             .style("stroke-width", 0)
-            .style("background-color", col => self.colours(col)).text(col => col)
+            .style("background-color", col => self.colours(col))
+            .text(col => col)
             .on("click", col => this.selected = col);
         })
     },

@@ -1,32 +1,120 @@
 var axios = require("axios");
 var d3 = require("d3");
-let dat;
 
-const url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/";
-axios.all([
-  axios.get(url + "time_series_covid19_confirmed_global.csv"),
-  axios.get(url + "time_series_covid19_deaths_global.csv"),
-  axios.get(url + "time_series_covid19_recovered_global.csv")
-]).then(tables => {
+let PD = require("probability-distributions");
+var odex = require("odex");
+var math = require("mathjs");
 
-  const data = tables.map(res => {
-    const dat = res.data.split("\n").map(d => + d.split(",").slice(-1)[0]).slice(1);
-    const countries = res.data.split("\n").map(d => d.split(",")[1]).slice(1);
-    let ds = [];
-    for (let i = 0; i < countries.length; i++) {
-      ds.push({ N: dat[i], Location: countries[i]})
-    }
-    return d3.nest().key(d => d.Location).rollup(vs => d3.sum(vs, d => d.N)).object(ds);
-  });
 
-  const res = d3.keys(data[0]).map(k => {
-    let c = data[0][k] || 0, d = data[1][k] || 0, r = data[2][k] || 0;
+class SimulationModel {
+  get AllParameters() {
+    return [
+      { name: "beta", label: "Transmission rate", text: "Transmission rate, per contact-day",
+        value: 1.5, min: 0 },
+      { name: "r_rec", label: "Recovery rate", text: "Recovery rate, per day", value: 0.05, min: 0 },
+      { name: "r_die", label: "Death rate", text: "Death rate, per day", value: 0.05, min: 0 },
+      { name: "d_incubate", label: "Incubation period", text: "Incubation period, days", value: 5, min: 0 }
+    ]
+  }
+
+  get ParameterList() {
+    return [];
+  }
+
+  get ParameterSettings() {
+    const pl = this.ParameterList;
+    return this.AllParameters.filter(p => pl.indexOf(p.name) >= 0);
+  }
+
+  get AllStates() {
+    return ["Uninfected", "Exposed", "Asymptomatic", "Infectious", "Recovered", "Died"];
+  }
+
+  get StateList() {
+    return this.AllStates;
+  }
+
+  dprior(pars) {
+    return 0;
+  }
+
+  rprior(pars) {
     return {
-      Location: k,
-      Confirmed: c,
-      Active: c - d - r,
-      Deaths: d
-    }
-  });
-console.log(res)
-});
+      beta: PD.runif(1, 1, 3),
+      r_rec: 0.1,
+      r_die: 1 / 20
+    };
+  }
+
+  generateModel(pars) {
+    return;
+  }
+
+  simulate(pars, y0, t0, t1, dt) {
+    dt = dt || 1;
+    const model = this.generateModel(pars);
+    const s = new odex.Solver(this.StateList.length);
+    s.denseOutput = true;
+
+    const res = [];
+    s.solve(model, t0, y0, t1, s.grid(dt, (x, y) => {
+      let ds = { Time: x };
+      this.StateList.forEach((k, i) => { ds[k] = y[i]});
+      res.push(ds)
+    }));
+    return res;
+  }
+}
+
+
+class SIR extends SimulationModel {
+  dprior(pars) {
+    return Math.log(PD.dunif(pars.beta, 1, 3));
+  }
+
+  rprior() {
+    return {
+      beta: PD.runif(1, 1, 3),
+      r_rec: 0.1,
+      r_die: 1 / 20
+    };
+  }
+
+  get StateList() {
+    return ["Uninfected", "Infectious", "Recovered", "Died"]
+  }
+
+  get ParameterList() {
+    return ["beta", "r_rec", "r_die"];
+  }
+
+  generateModel(pars) {
+    return function(t, y) {
+      const n = math.sum(y);
+
+      return [
+        - pars.beta * y[0] * y[1] / n,
+        pars.beta * y[0] * y[1] / n - pars.r_rec * y[1] - pars.r_die * y[1],
+        pars.r_rec * y[1],
+        pars.r_die * y[1]
+      ];
+    };
+  }
+}
+
+
+
+const Model = new SIR();
+
+let ps, simu;
+
+console.log(Model.ParameterSettings);
+
+simu = Model.simulate(Model.rprior(), [700, 100, 0, 0], 0, 10);
+console.log(simu);
+
+for (let i = 0; i < 100; i++) {
+  ps = Model.rprior();
+  simu = Model.simulate(ps, [700, 100, 0, 0], 0, 10);
+}
+

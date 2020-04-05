@@ -19,6 +19,8 @@
     "mathjax": "^3.0.1",
     "mathjs": "^6.6.0",
     "moment": "^2.24.0",
+    "odex": "^2.0.4",
+    "probability-distributions": "^0.9.1",
     "vue": "^2.6.11",
     "vue-clickaway": "^2.1.0",
     "vue-markdown": "^2.2.4",

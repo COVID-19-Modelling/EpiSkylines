@@ -136,7 +136,7 @@
             icon: "ti-move",
             title: "Effective reproduction number",
             value: "0",
-            footerText: "Weekly average with 95% credible interval",
+            footerText: "Weekly average with 95% confidence interval",
             footerIcon: "ti-time"
           },
           {
