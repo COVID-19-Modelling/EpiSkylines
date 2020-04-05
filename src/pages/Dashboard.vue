@@ -102,7 +102,7 @@ export default {
       ],
       trendChart: {
         data: {series: []},
-        margin: {top: 5, right: 15, bottom: 80, left: 70},
+        margin: {top: 5, right: 30, bottom: 80, left: 70},
         init: function(self) {
           self.x = d3
             .scaleTime()
@@ -120,7 +120,7 @@ export default {
           self.yAxis = g => g
             .attr("transform", `translate(${self.margin.left},0)`)
             .call(d3.axisLeft(self.y).ticks(10)
-              .tickFormat(d3.format(".0s")));
+              .tickFormat(d3.format(".2s")));
 
           self.svg.append("g").attr("class", "xAxis").call(self.xAxis);
 

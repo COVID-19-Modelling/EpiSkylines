@@ -1,5 +1,7 @@
 <template>
 <card title="Settings">
+  <p>Location</p>
+  <b-form-select v-model="selectedLocation" :options="locations"></b-form-select>
   <b-form-group>
     <p>Model structure</p>
     <b-form-checkbox-group
@@ -22,7 +24,7 @@
               :id="`par-${par.name}`"
               :max="par.max"
               :min="par.min"
-              step="0.001"
+              :step="par.step"
               :disabled="!parametersInUse.includes(par.name)"
               v-model="pars[par.name]"
           ></b-form-input>
@@ -31,8 +33,7 @@
           {{ par.text }}
         </b-tooltip>
       </b-row>
-      <b-button block variant="success" v-if="status !== 'running'"
-                v-on:click="emitPars()">Run</b-button>
+
       <b-button block variant="warning" v-if="status !== 'running'"
                 v-on:click="resetPars()">Reset</b-button>
     </b-form-group>
@@ -78,6 +79,12 @@
         default: function() {
           return ["beta", "r rec", "r die"];
         }
+      },
+      locations: {
+        type: Array,
+        default: function() {
+          return ["Taiwan"]
+        }
       }
     },
     data() {
@@ -87,7 +94,8 @@
       return {
         pars,
         requests: 0,
-        structure: []
+        structure: [],
+        selectedLocation: "US"
       };
     },
     computed: {
@@ -107,6 +115,24 @@
     watch: {
       structure() {
         this.emitPars();
+      },
+      selectedLocation() {
+        this.emitLocation();
+      },
+      pars: {
+        deep: true,
+        handler() {
+          if(this.parameters.every(p => (this.pars[p.name] > p.min))) {
+            this.emitPars();
+          }
+        }
+      },
+      parameters() {
+        this.parameters.forEach(p => {
+          if (this.pars[p.name] < p.min) {
+            this.pars[p.name] = p.value;
+          }
+        })
       }
     },
     methods: {
@@ -115,12 +141,17 @@
         this.emitPars();
       },
       emitPars() {
-        this.$emit("parchange", this.input)
+        this.$emit("parchange", this.input);
+      },
+      emitLocation() {
+        this.$emit("locchange", this.selectedLocation);
       }
     },
   }
 </script>
 
 <style scoped>
-
+  input:invalid {
+    box-shadow: 0 0 5px 1px red;
+  }
 </style>

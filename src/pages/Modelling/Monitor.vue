@@ -24,6 +24,10 @@
         type: Array,
         required: true
       },
+      dataPoints: {
+        type: Array,
+        required: true
+      },
       states: {
         type: Array,
         required: true
@@ -77,7 +81,7 @@
         self.yAxis = g => g
           .attr("transform", `translate(${self.margin.left},0)`)
           .call(d3.axisLeft(self.y).ticks(10)
-            .tickFormat(d3.format(".0s")));
+            .tickFormat(d3.format("0.2s")));
 
         self.svg.append("g").attr("class", "xAxis").call(self.xAxis);
 
@@ -90,7 +94,6 @@
           .attr("dy", "-0.9em")
           .style("text-anchor", "middle")
           .text("Date");
-
 
         self.svg
           .append("text")
@@ -105,8 +108,6 @@
         self.colours = d3.scaleOrdinal()
           .domain(self.chartData.states)
           .range(d3.schemeCategory10);
-
-        self.update();
       },
       update(self) {
         d3.select("#" + self.chartData.legendId).selectAll("button")
@@ -127,8 +128,7 @@
               update
                 .text(col => col)
                 .style("border-color", col => self.colours(col))
-                .style("color", col => self.colours(col))
-                .on("click", col => this.selected = col);
+                .style("color", col => self.colours(col));
             },
             exit => {
               exit.remove();
@@ -138,7 +138,10 @@
 
         self.x.domain(d3.extent(self.chartData.series, d=>parseTime(d.Date)));
 
-        self.y.domain([0, d3.max(self.chartData.series, ent => d3.max(d3.values(ent).slice(1)))]);
+        self.y.domain([0, Math.min(
+          d3.max(self.chartData.series, ent => d3.max(d3.values(ent).slice(1))),
+          this.dataPoints[this.dataPoints.length - 1].Confirmed * 2.5)
+        ]);
 
         self.svg
           .select("g.xAxis")
@@ -158,28 +161,72 @@
           .duration(100)
           .call(self.yAxis);
 
-        self.chartData.columns.forEach(col => {
+        self.chartData.states.forEach(col => {
+          if (self.chartData.columns.includes(col)) {
+            self.svg
+              .selectAll("path.line" + col.replace(/\s+/, ""))
+              .data([self.chartData.series])
+              .join(
+                enter => {
+                  enter
+                    .append("path")
+                    .attr("class", "line" + col.replace(/\s+/, ""))
+                    .attr("d", d3.line().y(d => self.y(d[col])).x(d => self.x(parseTime(d.Date))))
+                    .attr("fill", "none")
+                    .attr("stroke", self.colours(col))
+                    .attr("stroke-width", col === self.chartData.selected?3:1);
+                },
+                update => {
+                  update
+                    .transition(300)
+                    .attr("d", d3.line().y(d => self.y(d[col])).x(d => self.x(parseTime(d.Date))))
+                    .attr("stroke-width", col === self.chartData.selected?3:1);
+                }
+              );
+          } else {
+            self.svg
+              .selectAll("path.line" + col.replace(/\s+/, ""))
+              .data([])
+              .join(
+                () => {},
+                () => {},
+                exit => {
+                  exit
+                    .transition(300)
+                    .attr("stroke-width", 1)
+                    .remove();
+                }
+              );
+          }
+
+        });
+
+        ["Infectious", "Recovered", "Died"].forEach(col => {
           self.svg
-            .selectAll("path.line" + col.replace(/\s+/, ""))
-            .data([self.chartData.series])
+            .selectAll("circle.data" + col.replace(/\s+/, ""))
+            .data(this.dataPoints)
             .join(
               enter => {
                 enter
-                  .append("path")
-                  .attr("class", "line" + col.replace(/\s+/, ""))
-                  .attr("d", d3.line().y(d => self.y(d[col])).x(d => self.x(parseTime(d.Date))))
-                  .attr("fill", "none")
-                  .attr("stroke", self.colours(col))
-                  .attr("stroke-width", col === self.chartData.selected?3:1);
+                  .append("circle")
+                  .attr("class", "data" + col.replace(/\s+/, ""))
+                  .attr("cx", d => self.x(parseTime(d.Date)))
+                  .attr("cy", d => self.y(d[col]))
+                  .attr("r", col === self.chartData.selected?5:2)
+                  .attr("fill", self.colours(col))
+                  .attr("stroke", "#222")
+                  .attr("stroke-width", 1);
               },
               update => {
                 update
-                  .attr("d", d3.line().y(d => self.y(d[col])).x(d => self.x(parseTime(d.Date))))
-                  .attr("stroke-width", col === self.chartData.selected?3:1);
+                  .transition(300)
+                  .attr("cx", d => self.x(parseTime(d.Date)))
+                  .attr("cy", d => self.y(d[col]))
+                  .attr("r", col === self.chartData.selected?5:2)
+                  .attr("fill", self.colours(col));
               }
             );
         });
-
       },
       setLegends() {
         const currentTime = new Date().getTime().toString();

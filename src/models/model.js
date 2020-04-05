@@ -4,14 +4,19 @@ import * as math from "mathjs";
 
 
 class SimulationModel {
+  constructor(data) {
+    this.MinN = data[data.length - 1].Confirmed;
+    this.ARD = [data[0].Infectious, data[0].Recovered, data[0].Died]
+  }
+
   get AllParameters() {
     return [
       { name: "beta", label: "Transmission rate", text: "Transmission rate, per contact-day",
-        value: 1.5, min: 0 },
-      { name: "r_rec", label: "Recovery rate", text: "Recovery rate, per day", value: 0.05, min: 0 },
-      { name: "r_die", label: "Death rate", text: "Death rate, per day", value: 0.05, min: 0 },
-      { name: "d_incubate", label: "Incubation period", text: "Incubation period, days", value: 5, min: 0 },
-      { name: "n", label: "Population size", text: "Effective population size", value: 5000, min: 1, step: 0}
+        value: 1, min: 0, step: 0.001 },
+      { name: "r_rec", label: "Recovery rate", text: "Recovery rate, per day", value: 0.02, min: 0, step: 0.001 },
+      { name: "r_die", label: "Death rate", text: "Death rate, per day", value: 0.01, min: 0, step: 0.001 },
+      { name: "d_incubate", label: "Incubation period", text: "Incubation period, days", value: 5, min: 0, step: 0.1 },
+      { name: "n", label: "Population size", text: "Effective population size", value: this.MinN * 5, min: this.MinN, step: 1}
     ]
   }
 
@@ -19,8 +24,8 @@ class SimulationModel {
     return [];
   }
 
-  getY0(crd, pars) {
-    return [pars.n - math.sum(crd), crd[0] - crd[1] - crd[2], crd[1], crd[2]];
+  getY0(pars) {
+    return [pars.n - math.sum(this.ARD), this.ARD[0], this.ARD[1], this.ARD[2]];
   }
 
   get ParameterSettings() {
@@ -52,7 +57,7 @@ class SimulationModel {
 
   }
 
-  simulate(pars, crd, back, fore, dt) {
+  simulate(pars, back, fore, dt) {
     dt = dt || 1;
     const model = this.generateModel(pars);
     const s = new odex.Solver(this.StateList.length);
@@ -62,7 +67,7 @@ class SimulationModel {
     d.setDate(d.getDate() - back);
 
     const res = [];
-    s.solve(model, 0, this.getY0(crd, pars), back + fore, s.grid(dt, (x, y) => {
+    s.solve(model, 0, this.getY0(pars), back + fore, s.grid(dt, (x, y) => {
       d.setDate(d.getDate() + 1);
       let ds = { Date: d.toLocaleDateString("en-US") };
       this.StateList.forEach((k, i) => { ds[k] = y[i]});
@@ -131,11 +136,11 @@ class SEIR extends SimulationModel {
     return ["beta", "r_rec", "r_die", "d_incubate", "n"];
   }
 
-  getY0(crd, pars) {
-    let p_lat = pars.p_lat || 0;
-    let pre = pars.n - math.sum(crd);
+  getY0(pars) {
+    let p_lat = pars.p_lat || 0.01;
+    let pre = pars.n - math.sum(this.ARD);
 
-    return [pre * (1 - p_lat), pre * p_lat, crd[0] - crd[1] - crd[2], crd[1], crd[2]];
+    return [pre * (1 - p_lat), pre * p_lat, this.ARD[0], this.ARD[1], this.ARD[2]];
   }
 
   generateModel(pars) {

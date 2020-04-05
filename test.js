@@ -5,116 +5,66 @@ let PD = require("probability-distributions");
 var odex = require("odex");
 var math = require("mathjs");
 
+const url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/";
+axios.all([
+  axios.get(url + "time_series_covid19_confirmed_global.csv"),
+  axios.get(url + "time_series_covid19_deaths_global.csv"),
+  axios.get(url + "time_series_covid19_recovered_global.csv")
+]).then(tables => {
+  let last14 = tables.map(res => {
+    const lines = res.data.split("\n").map(d => d.split(","));
+    const cols = lines[0].slice(-14).map(d => {
+      d = d.replace(/^\s+/, "");
+      let ds = d.split("/");
+      return [("0" + ds[0]).slice(-2), ("0" + ds[1]).slice(-2), ("20" + ds[2]).slice(-4)].join("/");
+    });
 
-class SimulationModel {
-  get AllParameters() {
-    return [
-      { name: "beta", label: "Transmission rate", text: "Transmission rate, per contact-day",
-        value: 1.5, min: 0 },
-      { name: "r_rec", label: "Recovery rate", text: "Recovery rate, per day", value: 0.05, min: 0 },
-      { name: "r_die", label: "Death rate", text: "Death rate, per day", value: 0.05, min: 0 },
-      { name: "d_incubate", label: "Incubation period", text: "Incubation period, days", value: 5, min: 0 }
-    ]
-  }
+    let dat = lines.slice(1).map(d => d.slice(-14).map(d => + d));
 
-  get ParameterList() {
-    return [];
-  }
+    const countries = lines.slice(1).map(d => d[1]);
 
-  get ParameterSettings() {
-    const pl = this.ParameterList;
-    return this.AllParameters.filter(p => pl.indexOf(p.name) >= 0);
-  }
+    let ds = [];
+    for (let i = 0; i < countries.length; i++) {
+      if (countries[i]) {
+        ds.push({
+          Date: cols,
+          Series: dat[i],
+          Location: countries[i].replace(/\s*/, "")})
+      }
+    }
 
-  get AllStates() {
-    return ["Uninfected", "Exposed", "Asymptomatic", "Infectious", "Recovered", "Died"];
-  }
+    return d3.nest().key(d => d.Location)
+      .rollup(vs => {
+        let cs = [];
+        for (let i = 0; i < vs[0].Series.length; i++) {
+          cs.push(d3.sum(vs, d => d.Series[i]))
+        }
+        return {
+          Date: vs[0].Date,
+          Series: cs,
+          Location: vs[0].Location
+        };
+      }).object(ds);
+  });
 
-  get StateList() {
-    return this.AllStates;
-  }
+  let selected = d3.entries(last14[0])
+    .filter(d => d.value.Series[0] > 0 && d.value.Series[13] >= 100)
+    .map(d => d.key);
 
-  dprior(pars) {
-    return 0;
-  }
+  const data = {};
+  selected.forEach(country => {
+    data[country] = d3.range(0, 13).map(i => {
+      const ds = last14.map(d => d[country].Series[i]);
+      return {
+        Date: last14[0][country].Date[i],
+        Location: country,
+        Confirmed: ds[0],
+        Infectious: ds[0] - ds[1] - ds[2],
+        Recovered: ds[1],
+        Deaths: ds[2]
+      };
+    });
+  });
+});
 
-  rprior(pars) {
-    return {
-      beta: PD.runif(1, 1, 3),
-      r_rec: 0.1,
-      r_die: 1 / 20
-    };
-  }
-
-  generateModel(pars) {
-    return;
-  }
-
-  simulate(pars, y0, t0, t1, dt) {
-    dt = dt || 1;
-    const model = this.generateModel(pars);
-    const s = new odex.Solver(this.StateList.length);
-    s.denseOutput = true;
-
-    const res = [];
-    s.solve(model, t0, y0, t1, s.grid(dt, (x, y) => {
-      let ds = { Time: x };
-      this.StateList.forEach((k, i) => { ds[k] = y[i]});
-      res.push(ds)
-    }));
-    return res;
-  }
-}
-
-
-class SIR extends SimulationModel {
-  dprior(pars) {
-    return Math.log(PD.dunif(pars.beta, 1, 3));
-  }
-
-  rprior() {
-    return {
-      beta: PD.runif(1, 1, 3),
-      r_rec: 0.1,
-      r_die: 1 / 20
-    };
-  }
-
-  get StateList() {
-    return ["Uninfected", "Infectious", "Recovered", "Died"]
-  }
-
-  get ParameterList() {
-    return ["beta", "r_rec", "r_die"];
-  }
-
-  generateModel(pars) {
-    return function(t, y) {
-      const n = math.sum(y);
-
-      return [
-        - pars.beta * y[0] * y[1] / n,
-        pars.beta * y[0] * y[1] / n - pars.r_rec * y[1] - pars.r_die * y[1],
-        pars.r_rec * y[1],
-        pars.r_die * y[1]
-      ];
-    };
-  }
-}
-
-
-
-const Model = new SIR();
-
-let ps, simu;
-
-console.log(Model.ParameterSettings);
-
-simu = Model.simulate(Model.rprior(), [700, 100, 0, 0], 0, 10);
-console.log(simu);
-
-for (let i = 0; i < 100; i++) {
-  ps = Model.rprior();
-  simu = Model.simulate(ps, [700, 100, 0, 0], 0, 10);
-}
 
