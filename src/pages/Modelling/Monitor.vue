@@ -108,6 +108,8 @@
         self.colours = d3.scaleOrdinal()
           .domain(self.chartData.states)
           .range(d3.schemeCategory10);
+
+        self.update();
       },
       update(self) {
         d3.select("#" + self.chartData.legendId).selectAll("button")

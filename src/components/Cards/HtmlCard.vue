@@ -8,13 +8,12 @@
       </h4>
     </template>
     <div>
-      <iframe src="/si_tw/Plot_EpiCurveConfirm.html" style="width: 100%; height: 400pt"></iframe>
+      <iframe :src="url" frameBorder="0"></iframe>
     </div>
   </card>
 </template>
 <script>
   import Card from "./Card.vue";
-  import axios from "axios";
 
   export default {
     name: "html-card",
@@ -34,24 +33,17 @@
         type: String,
         default: ""
       },
-      path: {
+      url: {
         type: String,
-        default: ""
+        default: "https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_Incubation.html"
       }
-    },
-    data() {
-      return {
-        rawHTML: "<p>找不到啦! 是在 hello</p>"
-      }
-    },
-    mounted() {
-      axios.get("https://raw.githubusercontent.com/COVID-19-Modelling/DashboardData/master/Epi_plots/Plot_Incubation.html")
-        .then(res => {
-          this.rawHTML = res.data;
-        });
-
     }
   };
 </script>
 <style>
+  iframe {
+    overflow-y: auto;
+    width: 100%;
+    height: 500pt
+  }
 </style>

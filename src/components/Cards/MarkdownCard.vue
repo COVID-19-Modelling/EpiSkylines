@@ -66,24 +66,34 @@
       }
     },
     mounted() {
-      if (this.url !== "") {
-        axios.get(this.url)
-          .then(res => {
-            this.raw = res.data;
-          })
-          .catch(() => {
-            this.raw = this.source;
-          })
-      }
+      this.updateContent();
+    },
+    watch: {
+      url() {
+        this.updateContent();
+      },
+      source() {
+        this.updateContent();
+      },
     },
     methods: {
+      updateContent() {
+        if (this.url !== "") {
+          axios.get(this.url)
+            .then(res => {
+              this.raw = res.data;
+            })
+            .catch(() => {
+              this.raw = this.source;
+            })
+        }
+      },
       postRender(source) {
         source = this.parseMath(source);
         return source;
       },
       parseMath(source) {
         return source.replace(this.mathreg, (match, src) => {
-          console.log(src);
           src = src.replace(/\s+/g, "%20");
           return `<img src="http://latex.codecogs.com/svg.latex?${src}">`
         })

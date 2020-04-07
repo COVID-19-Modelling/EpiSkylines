@@ -135,7 +135,7 @@
             type: "success",
             icon: "ti-move",
             title: "Effective reproduction number",
-            value: "0",
+            value: "",
             footerText: "Weekly average with 95% confidence interval",
             footerIcon: "ti-time"
           },
@@ -185,8 +185,8 @@
 
             const si = src["Serial Interval"].Week;
             this.statsCards[2].value = `${si.mean} (${si.lower}-${si.upper})`;
-            const rt = src.Rt.Week;
-            this.statsCards[3].value = `${rt.mean} (${rt.lower}-${rt.upper})`;
+            //const rt = src.Rt.Week;
+            //this.statsCards[3].value = `${rt.mean} (${rt.lower}-${rt.upper})`;
             // this.statsCards[4].value = src.PercentageImport.Week;
           });
 

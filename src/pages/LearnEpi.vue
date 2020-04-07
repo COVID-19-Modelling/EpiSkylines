@@ -4,9 +4,10 @@
         <b-tab title="R0 and R(t)" active>
           <div class="row">
             <div class="col-md-6">
-              <markdown-card
-                  title="Basic Reproduction Numbers"
-                  :url="pages.R0"></markdown-card>
+            <html-card
+                title="Basic Reproduction numbers"
+                url="https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html"></html-card>
+
             </div>
             <div class="col-md-6">
               <markdown-card
@@ -31,11 +32,12 @@
     </div>
 </template>
 <script>
-  import { MarkdownCard } from "@/components";
+  import { MarkdownCard, HtmlCard } from "@/components";
 
   export default {
     components: {
-      MarkdownCard
+      MarkdownCard,
+      HtmlCard
     },
     props: {
       lang: {

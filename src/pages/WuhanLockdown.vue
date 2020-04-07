@@ -3,13 +3,13 @@
     <b-tabs class="col-12">
       <b-tab title="Keys" active>
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-4">
             <card>
 
             </card>
           </div>
-          <div class="col-md-4">
-            <markdown-card title="Serial Intervals in Taiwan" subTitle="from individual data"
+          <div class="col-md-8">
+            <markdown-card title="After Wuhan's lockdown" subTitle="from notification data"
                            :url="sourceKey">
             </markdown-card>
           </div>

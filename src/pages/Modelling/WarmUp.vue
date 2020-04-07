@@ -12,8 +12,7 @@
       <monitor :dataPoints="selected" :series="results" :states="model.AllStates" :statesInUse="model.StateList"></monitor>
     </div>
     <div class="col-md-3">
-      <markdown-card title="Model description">
-      </markdown-card>
+      <html-card title="Model specification" :url="doc_url"></html-card>
     </div>
   </div>
 </template>
@@ -21,7 +20,7 @@
 <script>
 import Controller from "./Controller";
 import Monitor from "./Monitor";
-import { MarkdownCard } from "@/components";
+import { HtmlCard } from "@/components";
 import { SIR, SEIR } from "@/models/model";
 
 export default {
@@ -29,7 +28,7 @@ export default {
   components: {
     Controller,
     Monitor,
-    MarkdownCard
+    HtmlCard
   },
   props: {
     rawdata: {
@@ -49,6 +48,7 @@ export default {
       results: [],
       location: sel,
       selected: this.rawdata[sel],
+      doc_url: "./docs/modelling_sir.md",
       margin: { top: 10, right: 50, bottom: 50, left: 100 },
     };
   },
@@ -80,8 +80,10 @@ export default {
     rebuildModel(structure) {
       if (structure.indexOf("lat") >= 0) {
         this.model = new SEIR(this.selected);
+        this.doc_url = "https://covid-19-modelling.github.io/DashboardData/Models/ModelSEIR.html";
       } else {
         this.model = new SIR(this.selected);
+        this.doc_url = "https://covid-19-modelling.github.io/DashboardData/Models/ModelSIR.html";
       }
       this.results = this.model.simulate(this.parameters, 15, 6);
     }
