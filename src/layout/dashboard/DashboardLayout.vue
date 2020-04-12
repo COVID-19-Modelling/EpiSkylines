@@ -3,12 +3,12 @@
     <side-bar title="EpiSkylines">
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel"/>
-        <sidebar-link to="/serial" name="COVID-19 in Taiwan" icon="ti-pulse"/>
-        <sidebar-link to="/wuhanlockdown" name="Wuhan's lockdown" icon="ti-archive"/>
-        <sidebar-link to="/learn" name="Learn Epi" icon="ti-key"/>
-        <sidebar-link to="/modelling" name="Modelling playgound" icon="ti-stats-up"/>
-        <sidebar-link to="/resources" name="Resources" icon="ti-view-list-alt"/>
-        <sidebar-link to="/info" name="About" icon="ti-user"/>
+        <sidebar-link to="/serial" :name="$t('pages.covid19_tw')" icon="ti-pulse"/>
+        <sidebar-link to="/wuhanlockdown" :name="$t('pages.wuhan')" icon="ti-archive"/>
+        <sidebar-link to="/learn" :name="$t('pages.learn')" icon="ti-key"/>
+        <sidebar-link to="/modelling" :name="$t('pages.model')" icon="ti-stats-up"/>
+        <sidebar-link to="/resources" :name="$t('pages.resource')" icon="ti-view-list-alt"/>
+        <sidebar-link to="/info" :name="$t('pages.about')" icon="ti-user"/>
         <!--<sidebar-link to="/icons" name="Icons" icon="ti-view-list-alt"/>-->
       </template>
       <mobile-menu>

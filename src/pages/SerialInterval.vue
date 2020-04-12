@@ -25,6 +25,7 @@
               <div slot="footer">
                 The surveillance data are synchronised
                 <a href="https://sites.google.com/cdc.gov.tw/2019ncov/taiwan?authuser=0" target="_blank">Taiwan CDC dashboard</a>
+                Case sources and test yield rates might be delayed due to epidemic investigations
               </div>
             </card>
           </div>
@@ -38,46 +39,50 @@
       <b-tab title="EpiCurves" lazy>
         <div class="row">
           <div class="col-md-12">
-            <card title="Symptom onset">
-              <iframe src="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_EpiCurveOnset.html"
-                      class="si-chart"></iframe>
-            </card>
+            <html-card
+                title="Epidemic curve"
+                url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_EpiCurveOnset.html">
+            </html-card>
           </div>
           <div class="col-md-12">
-            <card title="Confirmed cases">
-              <iframe src="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_EpiCurveConfirm.html"
-                      class="si-chart"></iframe>
-            </card>
+            <html-card
+                title="Confirmed cases"
+                url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_EpiCurveConfirm.html">
+            </html-card>
           </div>
         </div>
       </b-tab>
       <b-tab title="Serial Interval" lazy>
         <div class="row">
           <div class="col-md-12">
-            <card>
-              <iframe src="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_SI.html"
-                      class="si-chart"></iframe>
-            </card>
+            <html-card
+                title="Confirmed cases"
+                url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_SI.html">
+            </html-card>
           </div>
         </div>
       </b-tab>
       <b-tab title="Incubation time" lazy>
         <div class="row">
-          <div class="col-md-6">
-            <card title="Incubation time">
-              <iframe src="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_Incubation.html"
-                      class="si-chart"></iframe>
-            </card>
-          </div>
-          <div class="col-md-6">
-            <card title="Delay from symptom onset to testing">
-              <iframe src="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_OnsetToTesting.html"
-                      class="si-chart"></iframe>
-            </card>
+          <div class="col-md-12">
+            <html-card
+                title="Confirmed cases"
+                url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_Incubation.html">
+            </html-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="Methods" lazy>
+      <b-tab title="Symptom onset to Testing" lazy>
+        <div class="row">
+          <div class="col-md-12">
+            <html-card
+                title="Delay from symptom onset to testing"
+                url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_OnsetToTesting.html">
+            </html-card>
+          </div>
+        </div>
+      </b-tab>
+      <b-tab title="Data and Methodology" lazy>
         <div class="row">
           <div class="col-md-12">
             <markdown-card title="Serial Intervals in Taiwan" subTitle="from individual data"
@@ -90,13 +95,14 @@
   </div>
 </template>
 <script>
-  import { MarkdownCard, StatsCard } from "@/components/index";
+  import { MarkdownCard, StatsCard, HtmlCard } from "@/components/index";
   import axios from "axios";
 
   export default {
     components: {
       MarkdownCard,
-      StatsCard
+      StatsCard,
+      HtmlCard
     },
     props: {
       lang: {
@@ -142,17 +148,17 @@
           {
             type: "success",
             icon: "ti-cloud",
-            title: "Imported cases, weekly",
+            title: "Imported cases, last two weeks",
             value: "100%",
-            footerText: "Weekly average",
+            footerText: "Average by 2 weeks",
             footerIcon: "ti-time"
           },
           {
             type: "danger",
             icon: "ti-search",
-            title: "Test yield rate, weekly",
+            title: "Test yield rate, last two weeks",
             value: "",
-            footerText: "Weekly average",
+            footerText: "Average by 2 weeks",
             footerIcon: "ti-time"
           }
         ],
@@ -223,8 +229,8 @@
           this.statsCards[4].subvalue = `All time ${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
           this.statsCards[5].subvalue = `All time ${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
 
+          res = res.slice(-14); tests = tests.slice(-14);
 
-          res = res.slice(-7); tests = tests.slice(-7);
           out = res.reduce((a, b) => a + b.境外移入, 0); dom = res.reduce((a, b) => a + b.本土感染, 0);
           tested = tests.reduce((a, b) => a + b.Total, 0);
           this.statsCards[4].value = `${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;

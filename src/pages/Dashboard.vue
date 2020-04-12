@@ -8,7 +8,7 @@
             <i :class="stats.icon"></i>
           </div>
           <div class="numbers" slot="content">
-            <p>{{stats.title}}</p>
+            <p>{{$t(stats.title)}}</p>
             {{stats.value}}
           </div>
           <div class="stats" slot="footer">
@@ -41,6 +41,7 @@
                  :draw-chart="distChart.init"
                  :update-chart="distChart.update"
                  :margin="distChart.margin">
+          <p id="sel_country"></p>
           <div slot="legend">
             <div class="row">
               <button class="btn btn-outline-warning" v-on:click="selectIndex('Confirmed')">Confirmed</button>
@@ -70,7 +71,7 @@ export default {
         {
           type: "warning",
           icon: "ti-pulse",
-          title: "Total confirmed",
+          title: "indices.tot_confirmed",
           value: "214,894",
           footerText: "Updating",
           footerIcon: "ti-time"
@@ -78,7 +79,7 @@ export default {
         {
           type: "danger",
           icon: "ti-wallet",
-          title: "Total deaths",
+          title: "indices.tot_deaths",
           value: "8,732",
           footerText: "Updating",
           footerIcon: "ti-time"
@@ -86,7 +87,7 @@ export default {
         {
           type: "success",
           icon: "ti-pulse",
-          title: "Total recovered",
+          title: "indices.tot_recovered",
           value: "83,313",
           footerText: "Updating",
           footerIcon: "ti-time"
@@ -235,18 +236,12 @@ export default {
           selected: "Confirmed",
           burden: []
         },
-        margin: {top: 30, right: 10, bottom: 10, left: 10},
+        margin: {top: 5, right: 5, bottom: 5, left: 5},
         init(self) {
           self.treemap = d3.treemap().tile(d3.treemapResquarify)
             .size([
             self.width - self.margin.left - self.margin.right,
             self.height - self.margin.top - self.margin.bottom]);
-
-          self.svg.append("text")
-            .attr("class", "tooltip").attr("transform", `translate(15, 20)`)
-            .attr("font-size", "30pt")
-            .text("click to pick up a country")
-            .style("opacity", 1);
 
         },
         update(self) {
@@ -255,9 +250,8 @@ export default {
             .domain(self.chartData.burden.map(d => d.Location));
 
           const selected = self.chartData.selected;
-          self.svg.select("text.tooltip").transition()
-            .duration(200)
-            .text("click to pick up a country");
+
+          d3.select("#sel_country").text("click to pick up a country");
 
           const data = {
             Location: "World",
@@ -283,8 +277,7 @@ export default {
                   .style("stroke", "black")
                   .style("fill", d => self.colours(d.data.Location))
                   .on("click", d => {
-                    self.svg.select("text.tooltip").transition()
-                      .duration(200)
+                    d3.select("#sel_country")
                       .text(d.data.Location + ", " + self.chartData.selected + " " + d.value.toLocaleString('en-us'));
                   }))
                 .call(gp => gp.append("text")
@@ -316,6 +309,9 @@ export default {
   mounted() {
     this.fetchData();
   },
+  watch: {
+    statsCards: { deep: true }
+  },
   methods: {
     fetchData() {
       // fetch data from CSSE github
@@ -326,6 +322,7 @@ export default {
         axios.get(url + "time_series_covid19_recovered_global.csv")
       ]).then(tables => {
         const data = tables.map(res => {
+          res.data = res.data.replace('"Korea, South"', "South Korea").replace("Taiwan*", "Taiwan");
           const dat = res.data.split("\n").map(d => d.split(",").slice(4));
           const cols = dat[0].map(d => {
             d = d.replace(/\s+/, "");
@@ -373,6 +370,8 @@ export default {
         })();
 
         const lastday = tables.map(res => {
+          res.data = res.data.replace('"Korea, South"', "South Korea").replace("Taiwan*", "Taiwan");
+
           const dat = res.data.split("\n").map(d => + d.split(",").slice(-1)[0]).slice(1);
           const countries = res.data.split("\n").map(d => d.split(",")[1]).slice(1);
           let ds = [];

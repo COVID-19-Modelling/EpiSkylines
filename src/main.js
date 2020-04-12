@@ -30,8 +30,19 @@ Vue.use(VueSimpleMarkdown);
 Vue.use(PaperDashboard);
 Vue.use(BootstrapVue);
 
+import VueI18n from "vue-i18n";
+import zh_TW from "./lang/zh_TW.json";
+import en_UK from "./lang/en_UK.json";
+Vue.use(VueI18n);
+
+const i18n = new VueI18n({
+  locale: "en_UK",
+  messages: { zh_TW, en_UK }
+});
+
 /* eslint-disable no-new */
 new Vue({
   router,
+  i18n,
   render: h => h(App)
 }).$mount("#app");

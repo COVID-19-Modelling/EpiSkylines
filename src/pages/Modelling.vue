@@ -65,6 +65,8 @@ export default {
         axios.get(url + "time_series_covid19_recovered_global.csv")
       ]).then(tables => {
         let last14 = tables.map(res => {
+          res.data = res.data.replace('"Korea, South"', "South Korea").replace("Taiwan*", "Taiwan");
+
           const lines = res.data.split("\n").map(d => d.split(","));
           const cols = lines[0].slice(-14).map(d => {
             d = d.replace(/^\s+/, "");

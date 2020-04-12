@@ -1,0 +1,16 @@
+{
+  "indices": {
+    "confirmed": "Confirmed",
+    "tot_confirmed": "Total Confirmed",
+    "tot_deaths": "Total Deaths",
+    "tot_recovered": "Total Recovered"
+  },
+  "pages": {
+    "covid19_tw": "COVID-19 Taiwan",
+    "wuhan": "Wuhan's lockdown",
+    "learn": "Learn Epi",
+    "model": "Try Modelling",
+    "resource": "Resources",
+    "about": "About"
+  }
+}

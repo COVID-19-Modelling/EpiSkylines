@@ -13,6 +13,7 @@ import LearnEpi from "@/pages/LearnEpi";
 import WuhanLockdown from "@/pages/WuhanLockdown";
 import SerialInterval from "@/pages/SerialInterval";
 import Modelling from "@/pages/Modelling";
+import Notifications from "@/pages/Notifications";
 
 
 const routes = [
@@ -57,9 +58,9 @@ const routes = [
         component: LearnEpi
       },
       {
-        path: "maps",
-        name: "maps",
-        component: Maps
+        path: "noti",
+        name: "noti",
+        component: Notifications
       },
       {
         path: "icons",

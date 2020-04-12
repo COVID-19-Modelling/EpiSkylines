@@ -23,8 +23,8 @@
                      title="Language"
                      title-classes="nav-link"
                      icon="ti-bell">
-            <a class="dropdown-item">En</a>
-            <a class="dropdown-item">Ch</a>
+            <a class="dropdown-item" v-on:click="switchLang('en_UK')">en-UK</a>
+            <a class="dropdown-item" v-on:click="switchLang('zh_TW')">zh-TW</a>
           </drop-down>
           <li class="nav-item">
             <a href="#" class="nav-link">
@@ -39,10 +39,11 @@
     </div></nav>
 </template>
 <script>
+
 export default {
   computed: {
     routeName() {
-      return "EpiSkyline-COVID-19";
+      return "EpiSkylines-COVID-19";
       //const { name } = "EpiSkyline-COVID-19"; //this.$route;
       //return this.capitalizeFirstLetter(name);
     }
@@ -67,6 +68,12 @@ export default {
     },
     hideSidebar() {
       this.$sidebar.displaySidebar(false);
+    },
+    switchLang(lang) {
+      this.$i18n.locale = lang;
+      localStorage.setItem("locale", lang);
+      console.log(this.$t("confirmed"));
+
     }
   }
 };

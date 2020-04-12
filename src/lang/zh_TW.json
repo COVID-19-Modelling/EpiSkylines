@@ -1,0 +1,16 @@
+{
+  "indices": {
+    "confirmed": "確診",
+    "tot_confirmed": "總確診數",
+    "tot_deaths": "總死亡數",
+    "tot_recovered": "總康復數"
+  },
+  "pages": {
+    "covid19_tw": "COVID-19 在台灣",
+    "wuhan": "武漢封鎖",
+    "learn": "流病小教室",
+    "model": "傳染病模型",
+    "resource": "相關資源",
+    "about": "關於我們"
+  }
+}

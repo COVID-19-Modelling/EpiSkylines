@@ -1,7 +1,10 @@
 <template>
     <div class="row">
       <b-tabs class="col-12">
-        <b-tab title="R0 and R(t)" active>
+
+
+
+        <b-tab title="R0 and R(t)" lazy>
           <div class="row">
             <div class="col-md-6">
             <html-card
@@ -59,11 +62,6 @@
             "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_en.md",
         }
       };
-    },
-    watch: {
-      lang() {
-
-      }
     }
   };
 </script>
