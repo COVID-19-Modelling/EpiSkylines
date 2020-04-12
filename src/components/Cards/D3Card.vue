@@ -13,6 +13,7 @@
       </p>
     </template>
     <div>
+      <slot></slot>
       <div :id="chartId" class="ct-chart"></div>
       <div class="footer">
         <div class="chart-legend">

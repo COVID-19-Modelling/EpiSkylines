@@ -4,7 +4,7 @@
 set -e
 
 # build
-npm run build
+vue-cli-service  build
 
 # navigate into the build output directory
 cd dist
@@ -19,4 +19,4 @@ git commit -m 'deploy'
 # if you are deploying to https://<USERNAME>.github.io/<REPO>
 git push -f https://github.com/COVID-19-Modelling/EpiSkylines.git master:gh-pages
 
-cd -
+cd ../
