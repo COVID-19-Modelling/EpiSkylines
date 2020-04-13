@@ -7,9 +7,13 @@
     "r0": "Basic Reproduction Number",
     "rt": "Effective Reproduction Number"
   },
+  "actions": {
+    "soc_dist": "Social distancing"
+  },
   "pages": {
+    "world": "World Forecasts",
     "covid19_tw": "COVID-19 Taiwan",
-    "wuhan": "Wuhan's lockdown",
+    "wuhan": "Wuhan's Lockdown",
     "learn": "Learn Epi",
     "model": "Try Modelling",
     "resource": "Resources",

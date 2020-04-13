@@ -2,17 +2,20 @@ import DashboardLayout from "@/layout/dashboard/DashboardLayout.vue";
 // GeneralViews
 import NotFound from "@/pages/NotFoundPage.vue";
 
-// Admin pages
+// Pages
 import Dashboard from "@/pages/Dashboard.vue";
-import Icons from "@/pages/Icons.vue";
-import Maps from "@/pages/Maps.vue";
-import Typography from "@/pages/Typography.vue";
+import WorldForecasts from "@/pages/WorldForecasts";
+import Taiwan from "@/pages/Taiwan";
+import WuhanLockdown from "@/pages/WuhanLockdown";
+import LearnEpi from "@/pages/LearnEpi";
+import Modelling from "@/pages/Modelling";
 import Resources from "@/pages/Resources";
 import Info from "@/pages/Info";
-import LearnEpi from "@/pages/LearnEpi";
-import WuhanLockdown from "@/pages/WuhanLockdown";
-import SerialInterval from "@/pages/SerialInterval";
-import Modelling from "@/pages/Modelling";
+import Typography from "@/pages/Typography.vue";
+import Icons from "@/pages/Icons.vue";
+import Maps from "@/pages/Maps.vue";
+
+
 import Notifications from "@/pages/Notifications";
 
 
@@ -28,14 +31,19 @@ const routes = [
         component: Dashboard
       },
       {
+        path: "global",
+        name: "global",
+        component: WorldForecasts
+      },
+      {
+        path: "tw",
+        name: "tw",
+        component: Taiwan
+      },
+      {
         path: "wuhanlockdown",
         name: "wuhanlockdown",
         component: WuhanLockdown
-      },
-      {
-        path: "serial",
-        name: "serial",
-        component: SerialInterval
       },
       {
         path: "modelling",

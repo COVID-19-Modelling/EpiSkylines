@@ -20,89 +20,66 @@
                   :url="activePages.epiIndices.url[$i18n.locale]"></html-card>
             </div>
           </div>
-
         </b-tab>
-        <b-tab title="R0 and R(t)" lazy>
+        <b-tab :title="$t('class.actions')" lazy>
           <div class="row">
-            <div class="col-md-6">
-            <html-card
-                title="Basic Reproduction numbers"
-                url="https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html"></html-card>
-
-            </div>
-            <div class="col-md-6">
-              <markdown-card
-                  title="Effective Reproduction Numbers"
-                  :url="pages.Rt"></markdown-card>
+            <b-nav vertical class="col-md-3">
+              <card title="Menu">
+                <b-nav-item
+                    :id="page.title"
+                    v-for="(page, index) in actions"
+                    :key="index"
+                    v-on:click="activatePage('actions', page)"
+                    style="font-size: 22px; color: #0b2e13"
+                >{{ $t(page.title) }}</b-nav-item>
+              </card>
+            </b-nav>
+            <div class="col-md-9">
+              <html-card
+                  :title="$t(activePages.actions.title)"
+                  :url="activePages.actions.url[$i18n.locale]"></html-card>
             </div>
           </div>
-        </b-tab>
-        <b-tab title="Incidence and notification" lazy>
-
-          <markdown-card
-              title="Incidence and notification"
-              :url="pages.SI"></markdown-card>
-        </b-tab>
-        <b-tab title="Risk Perception" lazy>
-          <markdown-card
-              title="Risk Perception"
-              url="https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Risk.md"></markdown-card>
         </b-tab>
       </b-tabs>
     </div>
 </template>
 <script>
-  import { MarkdownCard, HtmlCard } from "@/components";
+  import { HtmlCard } from "@/components";
+
+  const get_page = function(key, id) {
+    return {
+      title: key,
+      id: id,
+      url: {
+        en_UK: `https://covid-19-modelling.github.io/DashboardData/Docs/Learn_${ id }_en.html`,
+        zh_TW: `https://covid-19-modelling.github.io/DashboardData/Docs/Learn_${ id }_tw.html`
+      }
+    };
+  };
 
   export default {
     components: {
-      MarkdownCard,
       HtmlCard
-    },
-    props: {
-      lang: {
-        type: String,
-        default: "en"
-      }
     },
     data() {
       return {
-        pages: {
-          R0: this.lang === "en"?
-            "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.md":
-            "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.md",
-          Rt: this.lang === "en"?
-            "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_en.md":
-            "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_en.md",
-          SI: this.lang === "en"?
-            "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_en.md":
-            "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_en.md",
-        },
         epiIndices: [
-          {
-            title: "indices.r0",
-            id: "r0",
-            url: {
-              en_UK: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html",
-              zh_TW: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_tw.html"
-            }
-          },
-          {
-            title: "indices.rt",
-            id: "rt",
-            url: {
-              en_UK: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_en.html",
-              zh_TW: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_Rt_tw.html"
-            }
-          }
+          get_page("indices.r0", "R0"),
+          get_page("indices.rt", "Rt")
+        ],
+        actions: [
+          get_page("actions.soc_dist", "R0")
         ],
         activePages: {
-          epiIndices: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html"
+          epiIndices: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html",
+          actions: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html"
         }
       };
     },
     mounted() {
       this.activatePage("epiIndices", this.epiIndices[0]);
+      this.activatePage("actions", this.actions[0]);
     },
     methods: {
       activatePage(tab, page) {

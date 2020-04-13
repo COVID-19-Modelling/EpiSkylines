@@ -3,7 +3,8 @@
     <side-bar title="EpiSkylines">
       <template slot="links">
         <sidebar-link to="/dashboard" name="Dashboard" icon="ti-panel"/>
-        <sidebar-link to="/serial" :name="$t('pages.covid19_tw')" icon="ti-pulse"/>
+        <sidebar-link to="/global" :name="$t('pages.world')" icon="ti-world"/>
+        <sidebar-link to="/tw" :name="$t('pages.covid19_tw')" icon="ti-pulse"/>
         <sidebar-link to="/wuhanlockdown" :name="$t('pages.wuhan')" icon="ti-archive"/>
         <sidebar-link to="/learn" :name="$t('pages.learn')" icon="ti-key"/>
         <sidebar-link to="/modelling" :name="$t('pages.model')" icon="ti-stats-up"/>

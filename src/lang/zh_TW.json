@@ -7,7 +7,11 @@
     "r0": "基本傳播數",
     "rt": "有效傳播數"
   },
+  "actions": {
+    "soc_dist": "保持社交距離"
+  },
   "pages": {
+    "world": "世界各地走勢",
     "covid19_tw": "COVID-19 在台灣",
     "wuhan": "武漢封鎖",
     "learn": "流病小教室",
@@ -17,6 +21,6 @@
   },
   "class": {
     "indices": "流病指標",
-    "intervention": "感控手段"
+    "actions": "感控手段"
   }
 }
