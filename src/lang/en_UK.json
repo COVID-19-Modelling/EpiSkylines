@@ -3,7 +3,9 @@
     "confirmed": "Confirmed",
     "tot_confirmed": "Total Confirmed",
     "tot_deaths": "Total Deaths",
-    "tot_recovered": "Total Recovered"
+    "tot_recovered": "Total Recovered",
+    "r0": "Basic Reproduction Number",
+    "rt": "Effective Reproduction Number"
   },
   "pages": {
     "covid19_tw": "COVID-19 Taiwan",
@@ -12,5 +14,9 @@
     "model": "Try Modelling",
     "resource": "Resources",
     "about": "About"
+  },
+  "class": {
+    "indices": "Epidemiological Indices",
+    "intervention": "Infection Control"
   }
 }
