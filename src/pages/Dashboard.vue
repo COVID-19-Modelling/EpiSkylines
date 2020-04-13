@@ -148,7 +148,7 @@ export default {
 
           self.colours = d3.scaleOrdinal()
             .domain(["Confirmed", "Deaths", "Recovered"])
-            .range(["#fff640", "#a6333d", "#97ff70"]);;
+            .range(["#ffab16", "#a6333d", "#23ff4f"]);
 
           self.update();
         },
@@ -410,15 +410,15 @@ export default {
 </script>
 <style scoped>
   .legend-active {
-    fill: #fff640;
-    color: #fff640;
+    fill: #ffab16;
+    color: #ffab16;
   }
   .legend-deaths {
     fill: #a6333d;
     color: #a6333d
   }
   .legend-recovered {
-    fill: #97ff70;
-    color: #97ff70
+    fill: #23ff4f;
+    color: #23ff4f
   }
 </style>

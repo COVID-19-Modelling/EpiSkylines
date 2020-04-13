@@ -9,7 +9,10 @@
                   v-on:parchange="changeParameters($event)"></controller>
     </div>
     <div class="col-md-6">
-      <monitor :dataPoints="selected" :series="results" :states="model.AllStates" :statesInUse="model.StateList"></monitor>
+      <monitor :dataPoints="selected"
+               :series="results"
+               :states="model.AllStates"
+               :statesInUse="model.StateList"></monitor>
     </div>
     <div class="col-md-3">
       <html-card title="Model specification" :url="doc_url"></html-card>

@@ -2,7 +2,9 @@
   <div class="row">
     <b-tabs class="col-12">
       <b-tab title="Recovery and Death rates" active>
-        <rec-die :rawdata="rawData"></rec-die>
+        <rec-die :rawdata="selectedEpiIndices"
+                 :locations="locations"
+                 v-on:locchange="changeLocation($event)"></rec-die>
       </b-tab>
       <b-tab title="Force of infections" lazy>
         <div class="row">
@@ -18,7 +20,7 @@
 <script>
   import { MarkdownCard } from "@/components/index";
   import RecDie from "./StudyB/RecDie";
-
+  import axios from "axios";
 
   export default {
     name: "WorldForecasts",
@@ -28,7 +30,10 @@
     },
     data() {
       return {
-        rawData: {}
+        locations: [],
+        epiIndices: {},
+        selectedLocation: "US",
+        selectedEpiIndices: {}
       }
     },
     mounted() {
@@ -36,7 +41,18 @@
     },
     methods: {
       fetchData() {
-
+        axios.get("https://covid-19-modelling.github.io/End-COVID-19/Output/EpiIndices.json")
+          .then(res => {
+            this.locations = Object.values(res.data)
+              .filter(d =>{ return d.Estimates.filter(ent => ent.Indices !== undefined).length > 5})
+              .map(d => d.Location);
+            this.epiIndices = res.data;
+            this.selectedEpiIndices = res.data[this.selectedLocation];
+          });
+      },
+      changeLocation(loc) {
+        this.selectedLocation = loc;
+        this.selectedEpiIndices = this.epiIndices[this.selectedLocation];
       }
     }
   }

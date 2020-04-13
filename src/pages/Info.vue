@@ -37,7 +37,7 @@
             </h3>
             <div class="row">
               <div class="col-md-6">
-                <h5>Email:</h5><p>XX@gmail.com</p>
+                <h5>Email:</h5><p>dachuwu@gmail.com</p>
               </div>
               <div class="col-md-6">
                 <h5>Github:</h5><p><a href="https://github.com/dachuwu" target="_blank">dachuwu</a></p>
