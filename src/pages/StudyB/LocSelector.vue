@@ -1,7 +1,7 @@
 <template>
   <card title="Settings">
     <p>Location</p>
-    <b-form-select v-model="selectedLocation" :options="locations"></b-form-select>
+    <b-form-select v-model="selected" :options="locations"></b-form-select>
     <slot></slot>
   </card>
 </template>
@@ -15,21 +15,28 @@
         default: function() {
           return ["US"]
         }
+      },
+      selectedLocation: {
+        type: String,
+        default: "US"
       }
     },
     data() {
       return {
-        selectedLocation: "US"
+        selected: this.selectedLocation
       };
     },
     watch: {
-      selectedLocation() {
+      selected() {
         this.emitLocation();
+      },
+      selectedLocation() {
+        this.selected = this.selectedLocation;
       }
     },
     methods: {
       emitLocation() {
-        this.$emit("locchange", this.selectedLocation);
+        this.$emit("locchange", this.selected);
       }
     },
   }

@@ -4,15 +4,19 @@
       <b-tab title="Recovery and Death rates" active>
         <rec-die :rawdata="selectedEpiIndices"
                  :locations="locations"
+                 :selected-location="selectedLocation"
                  v-on:locchange="changeLocation($event)"></rec-die>
       </b-tab>
       <b-tab title="Force of infections" lazy>
-        <div class="row">
-          <div class="col-md-12">
-            <markdown-card title="R(t)">
-            </markdown-card>
-          </div>
-        </div>
+      <f-o-i :rawdata="selectedEpiIndices"
+             :locations="locations"
+             :selected-location="selectedLocation"
+             v-on:locchange="changeLocation($event)"></f-o-i>
+      </b-tab>
+      <b-tab title="Interpretations" lazy>
+        <markdown-card title="Interpretation of the indices">
+
+        </markdown-card>
       </b-tab>
     </b-tabs>
   </div>
@@ -20,13 +24,15 @@
 <script>
   import { MarkdownCard } from "@/components/index";
   import RecDie from "./StudyB/RecDie";
+  import FOI from "./StudyB/FOI";
   import axios from "axios";
 
   export default {
     name: "WorldForecasts",
     components: {
       MarkdownCard,
-      RecDie
+      RecDie,
+      FOI
     },
     data() {
       return {

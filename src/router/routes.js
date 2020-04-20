@@ -9,6 +9,7 @@ import Taiwan from "@/pages/Taiwan";
 import WuhanLockdown from "@/pages/WuhanLockdown";
 import LearnEpi from "@/pages/LearnEpi";
 import Modelling from "@/pages/Modelling";
+import Screening from "@/pages/Screening";
 import Resources from "@/pages/Resources";
 import Info from "@/pages/Info";
 import Typography from "@/pages/Typography.vue";
@@ -39,6 +40,11 @@ const routes = [
         path: "tw",
         name: "tw",
         component: Taiwan
+      },
+      {
+        path: "screen",
+        name: "screen",
+        component: Screening
       },
       {
         path: "wuhanlockdown",

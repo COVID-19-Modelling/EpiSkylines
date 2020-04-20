@@ -8,9 +8,10 @@
           style="height: 400pt;">
       </loc-selector>
     </div>
-    <div class="col-md-4" v-for="(chart, index) in charts" :key="index">
+    <div class="col-md-3" v-for="(chart, index) in charts" :key="index">
       <trajectory
           :title="chart.title"
+          :sub-title="chart.subtitle"
           :chart-data="chart.data"
       ></trajectory>
     </div>
@@ -23,7 +24,7 @@
   import * as d3 from "d3";
 
   export default {
-    name: "RecDie",
+    name: "FOI",
     components: {
       LocSelector,
       Trajectory
@@ -46,13 +47,20 @@
       return {
         charts: [
           {
-            title: "Recovery rate",
+            title: "Contact/transmission rate",
             data: { location: "", series: [] }
           },
           {
-            title: "Death rate",
+            title: "Exogenous effect of infection",
+            subtitle: "",
             data: { location: "", series: [] }
-          }]
+          },
+          {
+            title: "Effective reproduction number",
+            subtitle: "",
+            data: { location: "", series: [] }
+          }
+          ]
       };
     },
     watch: {
@@ -65,7 +73,7 @@
     },
     methods: {
       extractSeries() {
-        ["r_rec", "r_death"].forEach((key, i) => {
+        ["beta", "kappa", "Rt"].forEach((key, i) => {
           let last = 0;
 
           this.charts[i].data = {

@@ -1,91 +1,55 @@
 <template>
-  <div class="row">
-    <div class="col-md-3">
-      <loc-selector
-          :locations="locations"
-          :selected-location="selectedLocation"
-          v-on:locchange="$emit('locchange', $event)"
-          style="height: 400pt;">
-      </loc-selector>
-    </div>
-    <div class="col-md-4" v-for="(chart, index) in charts" :key="index">
-      <trajectory
-          :title="chart.title"
-          :chart-data="chart.data"
-      ></trajectory>
-    </div>
-  </div>
+  <d3-card :title="title"
+           :sub-title="subTitle"
+           :footer-text="footerText"
+           :chart-data="chartData"
+           :draw-chart="drawChart"
+           :update-chart="updateChart">
+  </d3-card>
 </template>
-
 <script>
-  import LocSelector from "./LocSelector";
-  import Trajectory from "./Trajectory";
+  import { D3Card } from "@/components";
   import * as d3 from "d3";
 
   export default {
-    name: "RecDie",
+    name: "Trajectory",
     components: {
-      LocSelector,
-      Trajectory
+      D3Card
     },
     props: {
-      rawdata: {
+      footerText: {
+        type: String,
+        default: ""
+      },
+      title: {
+        type: String,
+        default: ""
+      },
+      subTitle: {
+        type: String,
+        default: ""
+      },
+      margin: {
+        type: Object,
+        default: () => {
+          return {top: 10, right: 30, bottom: 100, left: 100};
+        }
+      },
+      chartData: {
         type: Object,
         required: true
       },
-      locations: {
-        type: Array,
-        required: true
+      frame: {
+        type: Number,
+        default: 30
       },
-      selectedLocation: {
-        type: String,
-        default: "US"
+      upper: {
+        type: Number,
+        default: Infinity
       }
-    },
-    data() {
-      return {
-        charts: [
-          {
-            title: "Recovery rate",
-            data: { location: "", series: [] }
-          },
-          {
-            title: "Death rate",
-            data: { location: "", series: [] }
-          }]
-      };
-    },
-    watch: {
-      rawdata() {
-        this.extractSeries()
-      }
-    },
-    mounted() {
-      this.extractSeries();
     },
     methods: {
-      extractSeries() {
-        ["r_rec", "r_death"].forEach((key, i) => {
-          let last = 0;
-
-          this.charts[i].data = {
-            location: this.rawdata.Location,
-            series: this.rawdata.Estimates
-              .map(ent => {
-                return {
-                  Date: ent.Date,
-                  Value: ent.Indices.filter(d => d._row === key)[0]
-                }
-              }).filter(ent => ent.Value !== undefined)
-              .map(ent => {
-                ent.Sign = ent.Value.mean > last? "+": "-";
-                last = ent.Value.mean;
-                return ent;
-              })
-          };
-        });
-      },
-      init(self) {
+      drawChart(self) {
         self.x = d3
           .scaleTime()
           .rangeRound([self.margin.left, self.width - self.margin.right]);
@@ -126,18 +90,18 @@
           .style("text-anchor", "middle")
           .text("Number");
 
-        //self.update();
+        self.update();
       },
-      update(self) {
+      updateChart(self) {
         const parseTime = d3.timeParse("%Y-%m-%d");
         let mx =  d3.max(self.chartData.series, d => parseTime(d.Date));
         let mn =  d3.min(self.chartData.series, d => parseTime(d.Date));
-        mn.setTime(mx.getTime() - 29.99 * 86400000);
+        mn.setTime(mx.getTime() - (this.frame - 0.01) * 86400000);
         self.x.domain([mn, mx]);
 
         self.y.domain([0,
-          Math.min(1, 1.1*d3.max(self.chartData.series
-            .filter(ent => ent.Value !== undefined), ent => Math.max(ent.Value.Upper, ent.Value.Mean)))
+          Math.min(this.upper, 1.1*d3.max(self.chartData.series
+            .filter(ent => ent.Value !== undefined), ent => Math.max(ent.Value.upper, ent.Value.mean)))
         ]);
 
         self.svg
@@ -159,21 +123,21 @@
           .call(self.yAxis);
 
         self.svg.selectAll("g.point")
-          .data(self.chartData.series)
+          .data(self.chartData.series.filter(d => parseTime(d.Date) > mn))
           .join(
             enter => {
               enter.append("g")
                 .attr("class", "point")
                 .call(g => {
                   g.append("circle")
-                    .attr("cy", d => self.y(d.Value.Mean))
+                    .attr("cy", d => self.y(d.Value.mean))
                     .attr("cx", d => self.x(parseTime(d.Date)))
                     .attr("r", self.width / 150)
                     .attr("fill", d => d.Sign === "+"?"red":"green");
 
                   g.append("line")
-                    .attr("y1", d => self.y(d.Value.Lower))
-                    .attr("y2", d => self.y(d.Value.Upper))
+                    .attr("y1", d => self.y(d.Value.lower))
+                    .attr("y2", d => self.y(d.Value.upper))
                     .attr("x1", d => self.x(parseTime(d.Date)))
                     .attr("x2", d => self.x(parseTime(d.Date)))
                     .style("stroke", d => d.Sign === "+"?"red":"green");
@@ -186,7 +150,7 @@
                     .attr("cx", d => self.x(parseTime(d.Date)))
                     .transition()
                     .duration(300)
-                    .attr("cy", d => self.y(d.Value.Mean))
+                    .attr("cy", d => self.y(d.Value.mean))
                     .attr("fill", d => d.Sign === "+"?"red":"green");
 
                   g.select("line")
@@ -194,8 +158,8 @@
                     .attr("x2", d => self.x(parseTime(d.Date)))
                     .transition()
                     .duration(300)
-                    .attr("y1", d => self.y(d.Value.Lower))
-                    .attr("y2", d => self.y(d.Value.Upper))
+                    .attr("y1", d => self.y(d.Value.lower))
+                    .attr("y2", d => self.y(d.Value.upper))
                     .style("stroke", d => d.Sign === "+"?"red":"green");
                 });
 
@@ -206,9 +170,7 @@
           )
       }
     }
-  }
+  };
 </script>
-
-<style scoped>
-
+<style>
 </style>

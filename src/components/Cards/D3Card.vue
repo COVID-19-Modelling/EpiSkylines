@@ -91,8 +91,11 @@ export default {
     };
   },
   watch: {
-    chartData() {
-      this.update();
+    chartData: {
+      deep: true,
+      handler() {
+        this.update();
+      }
     }
   },
   mounted() {
