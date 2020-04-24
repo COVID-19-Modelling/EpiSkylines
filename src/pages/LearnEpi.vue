@@ -66,7 +66,8 @@
       return {
         epiIndices: [
           get_page("indices.r0", "R0"),
-          get_page("indices.rt", "Rt")
+          get_page("indices.rt", "Rt"),
+          get_page("indices.double", "double")
         ],
         actions: [
           get_page("actions.soc_dist", "R0")

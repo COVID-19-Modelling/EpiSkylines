@@ -4,7 +4,7 @@
       <b-tab title="Try modelling" active>
         <warm-up :rawdata="rawData"></warm-up>
       </b-tab>
-      <b-tab title="Fit model to data" lazy>
+      <!--<b-tab title="Fit model to data" lazy>
         <div class="row">
           <div class="col-md-12">
             <markdown-card title="Fit2Data">
@@ -19,12 +19,11 @@
             </markdown-card>
           </div>
         </div>
-      </b-tab>
+      </b-tab>-->
     </b-tabs>
   </div>
 </template>
 <script>
-import { MarkdownCard } from "@/components/index";
 import WarmUp from "./Modelling/WarmUp";
 import axios from "axios";
 import * as d3 from "d3";
@@ -32,7 +31,7 @@ import * as d3 from "d3";
 
 export default {
   components: {
-    MarkdownCard,
+    //MarkdownCard,
     WarmUp
   },
   props: {

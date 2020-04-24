@@ -3,23 +3,23 @@
     <b-tabs class="col-12">
       <b-tab title="Keys" active>
         <div class="row">
-          <div class="col-md-4">
-            <card>
-
-            </card>
+          <div class="col-md-7">
+            <html-card
+                title="Abstract"
+                :url="sourceAbstract[$i18n.locale]"></html-card>
           </div>
-          <div class="col-md-8">
-            <markdown-card title="After Wuhan's lockdown" subTitle="from notification data"
-                           :url="sourceKey">
-            </markdown-card>
+          <div class="col-md-5">
+            <html-card
+                title="Key messages"
+                :url="sourceKey[$i18n.locale]"></html-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="Estimators" lazy>
+      <b-tab :title="$t('stats.est')" lazy>
         <estimators></estimators>
       </b-tab>
 
-      <b-tab title="Forecasts" lazy>
+      <b-tab :title="$t('stats.fore')" lazy>
         <prevalence></prevalence>
       </b-tab>
 
@@ -29,9 +29,9 @@
       <b-tab title="Methods" lazy>
         <div class="row">
           <div class="col-md-12">
-            <markdown-card title="Benchmark epidemic of COVID-19" subTitle="after Wuhan's lockdown"
-                           :url="sourceMethod">
-            </markdown-card>
+            <html-card
+                title="Benchmark epidemic of COVID-19" subTitle="after Wuhan's lockdown"
+                :url="sourceMethod[$i18n.locale]"></html-card>
           </div>
         </div>
       </b-tab>
@@ -42,35 +42,30 @@
 import Estimators from "./StudyA/Estimators";
 import Prevalence from "./StudyA/Prevalence";
 import Lockdown from "./StudyA/Lockdown";
-import { MarkdownCard } from "@/components/index";
+import { HtmlCard } from "@/components/index";
 
 export default {
   components: {
     Estimators,
     Prevalence,
     Lockdown,
-    MarkdownCard
-  },
-  props: {
-    lang: {
-      type: String,
-      default: "en"
-    }
+    HtmlCard
   },
   data() {
     return {
-      sourceKey: this.lang === "en"?
-        "https://covid-19-modelling.github.io/DashboardData/Docs/Wuhan_Key_en.md":
-        "https://covid-19-modelling.github.io/DashboardData/Docs/Wuhan_Key_en.md",
-      sourceMethod: this.lang === "en"?
-        "https://covid-19-modelling.github.io/DashboardData/Docs/Wuhan_Method_en.md":
-        "https://covid-19-modelling.github.io/DashboardData/Docs/Wuhan_Method_en.md"
+      sourceKey: {
+        en_UK: `https://covid-19-modelling.github.io/DashboardData/Studies/Wuhan_Key_en.html`,
+        zh_TW: `https://covid-19-modelling.github.io/DashboardData/Studies/Wuhan_Key_tw.html`
+      },
+      sourceAbstract: {
+        en_UK: `https://covid-19-modelling.github.io/DashboardData/Studies/Wuhan_Abstract_en.html`,
+        zh_TW: `https://covid-19-modelling.github.io/DashboardData/Studies/Wuhan_Abstract_en.html`
+      },
+      sourceMethod: {
+        en_UK: "https://covid-19-modelling.github.io/DashboardData/Studies/Wuhan_Method_en.html",
+        zh_TW: "https://covid-19-modelling.github.io/DashboardData/Studies/Wuhan_Method_tw.html"
+      }
     };
-  },
-  watch: {
-    lang() {
-
-    }
   }
 };
 </script>

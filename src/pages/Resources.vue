@@ -3,7 +3,7 @@
     <div class="col-md-12 col-xl-6">
       <card>
         <template slot="header">
-          <h4 class="card-title">More science and models about COVID-19</h4>
+          <h4 class="card-title">{{ $t('title.more_sci') }}More science and models about COVID-19</h4>
           <p class="card-category">Modelling resources</p>
         </template>
         <div class="content">
@@ -21,7 +21,7 @@
     <div class="col-md-12 col-xl-6">
       <card>
         <template slot="header">
-          <h4 class="card-title">More dashboards / databases for COVID-19</h4>
+          <h4 class="card-title">{{ $t('title.more_dash') }}</h4>
           <p class="card-category">Other dashboards / databases</p>
         </template>
         <div class="content">

@@ -21,21 +21,21 @@
     <!--Charts-->
     <div class="row">
       <div class="col-md-5 col-12">
-        <d3-card title="COVID-19 time-series"
+        <d3-card :title="$t('title.cov_ts')"
                  sub-title=""
                  :chart-data="trendChart.data"
                  :draw-chart="trendChart.init"
                  :update-chart="trendChart.update"
                  :margin="trendChart.margin">
           <div slot="legend">
-            <i class="fa fa-circle legend-active"></i> Active cases
-            <i class="fa fa-circle legend-deaths"></i> Deaths
-            <i class="fa fa-circle legend-recovered"></i> Recovered
+            <i class="fa fa-circle legend-active"></i>{{ $t("indices.act") }}
+            <i class="fa fa-circle legend-deaths"></i>{{ $t("indices.deaths") }}
+            <i class="fa fa-circle legend-recovered"></i>{{ $t("indices.recovered") }}
           </div>
         </d3-card>
       </div>
       <div class="col-md-7 col-12">
-        <d3-card title="Occurrence by country/region, all time"
+        <d3-card :title="$t('title.occur_all')"
                  :sub-title="distChart.data.selected"
                  :chart-data="distChart.data"
                  :draw-chart="distChart.init"
@@ -44,9 +44,9 @@
           <p id="sel_country"></p>
           <div slot="legend">
             <div class="row">
-              <button class="btn btn-outline-warning" v-on:click="selectIndex('Confirmed')">Confirmed</button>
-              <button class="btn btn-warning" v-on:click="selectIndex('Active')">Active</button>
-              <button class="btn btn-danger" v-on:click="selectIndex('Deaths')">Deaths</button>
+              <button class="btn btn-outline-warning" v-on:click="selectIndex('Confirmed')">{{ $t("indices.confirmed") }}</button>
+              <button class="btn btn-warning" v-on:click="selectIndex('Active')">{{ $t("indices.act") }}</button>
+              <button class="btn btn-danger" v-on:click="selectIndex('Deaths')">{{ $t("indices.deaths") }}</button>
             </div>
           </div>
         </d3-card>
@@ -95,7 +95,7 @@ export default {
         {
           type: "info",
           icon: "ti-control-forward",
-          title: "Doubling Time",
+          title: "indices.double",
           value: "",
           footerText: "Since today",
           footerIcon: "ti-time"

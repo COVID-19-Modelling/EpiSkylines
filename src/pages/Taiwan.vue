@@ -12,7 +12,7 @@
                       <i :class="stats.icon"></i>
                     </div>
                     <div class="numbers" slot="content">
-                      <p>{{stats.title}}</p>
+                      <p>{{ $t(stats.title) }}</p>
                       <span>{{stats.value}}</span><br>
                       <span class="subvalue" v-if="stats.subvalue !== undefined">{{ stats.subvalue }}</span>
                     </div>
@@ -30,62 +30,62 @@
             </card>
           </div>
           <div class="col-md-4">
-            <markdown-card title="Serial Intervals in Taiwan" subTitle="from individual data"
+            <markdown-card :title="$t('title.si_tw')" subTitle="from individual data"
                            :url="sourceKey">
             </markdown-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="EpiCurves" lazy>
+      <b-tab :title="$t('misc.epicurve')" lazy>
         <div class="row">
           <div class="col-md-12">
             <html-card
-                title="Epidemic curve"
+                :title="$t('misc.epicurve')"
                 url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_EpiCurveOnset.html">
             </html-card>
           </div>
           <div class="col-md-12">
             <html-card
-                title="Confirmed cases"
+                :title="$t('indices.tot_confirmed')"
                 url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_EpiCurveConfirm.html">
             </html-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="Serial Interval" lazy>
+      <b-tab :title="$t('indices.si')" lazy>
         <div class="row">
           <div class="col-md-12">
             <html-card
-                title="Confirmed cases"
+                :title="$t('indices.si')"
                 url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_SI.html">
             </html-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="Incubation time" lazy>
+      <b-tab :title="$t('indices.incu')" lazy>
         <div class="row">
           <div class="col-md-12">
             <html-card
-                title="Confirmed cases"
+                :title="$t('indices.incu')"
                 url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_Incubation.html">
             </html-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="Symptom onset to Testing" lazy>
+      <b-tab :title="$t('indices.o2t')" lazy>
         <div class="row">
           <div class="col-md-12">
             <html-card
-                title="Delay from symptom onset to testing"
+                :title="$t('indices.do2t')"
                 url="https://covid-19-modelling.github.io/DashboardData/Epi_plots/Plot_OnsetToTesting.html">
             </html-card>
           </div>
         </div>
       </b-tab>
-      <b-tab title="Data and Methodology" lazy>
+      <b-tab :title="$t('title.dat_meth')" lazy>
         <div class="row">
           <div class="col-md-12">
-            <markdown-card title="Serial Intervals in Taiwan" subTitle="from individual data"
+            <markdown-card :title="$t('title.si_tw')" subTitle="from individual data"
                            :url="sourceMethod">
             </markdown-card>
           </div>
@@ -116,7 +116,7 @@
           {
             type: "warning",
             icon: "ti-pulse",
-            title: "Total confirmed",
+            title: "indices.tot_confirmed",
             value: "0",
             footerText: "All time",
             footerIcon: "ti-time"
@@ -124,7 +124,7 @@
           {
             type: "danger",
             icon: "ti-pulse",
-            title: "Total deaths",
+            title: "indices.tot_deaths",
             value: "0/0",
             footerText: "All time",
             footerIcon: "ti-time"
@@ -132,7 +132,7 @@
           {
             type: "info",
             icon: "ti-control-shuffle",
-            title: "Serial Interval",
+            title: "indices.si",
             value: "",
             footerText: "Weekly average with 95% credible interval",
             footerIcon: "ti-time"
@@ -140,7 +140,7 @@
           {
             type: "success",
             icon: "ti-move",
-            title: "Effective reproduction number",
+            title: "indices.rt",
             value: "",
             footerText: "Weekly average with 95% confidence interval",
             footerIcon: "ti-time"
@@ -148,7 +148,7 @@
           {
             type: "success",
             icon: "ti-cloud",
-            title: "Imported cases, last two weeks",
+            title: "indices.imported2",
             value: "100%",
             footerText: "Average by 2 weeks",
             footerIcon: "ti-time"
@@ -156,7 +156,7 @@
           {
             type: "danger",
             icon: "ti-search",
-            title: "Test yield rate, last two weeks",
+            title: "indices.yield2",
             value: "",
             footerText: "Average by 2 weeks",
             footerIcon: "ti-time"
