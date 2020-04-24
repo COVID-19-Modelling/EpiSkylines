@@ -1,23 +1,77 @@
 {
   "indices": {
     "confirmed": "確診",
+    "act": "Active cases",
+    "recovered": "復原",
+    "deaths": "死亡",
     "tot_confirmed": "總確診數",
     "tot_deaths": "總死亡數",
-    "tot_recovered": "總康復數",
+    "tot_recovered": "總復原數",
     "r0": "基本傳播數",
-    "rt": "有效傳播數"
+    "rt": "有效傳播數",
+    "lat": "傳染力潛伏期",
+    "incu": "症狀潛伏期s",
+    "si": "世代間隔",
+    "o2t": "症狀到檢驗",
+    "do2t": "症狀到檢驗時間",
+    "imported": "境外移入",
+    "yield": "檢驗陽性",
+    "imported2": "境外移入, 雙週平均",
+    "yield2": "檢驗陽性, 雙週平均",
+    "double": "倍增需時",
+    "prv": "盛行率",
+    "inc": "發生率",
+    "noti": "通報數",
+    "mor": "死亡率",
+    "fatal": "致死率"
   },
   "actions": {
-    "soc_dist": "保持社交距離"
+    "soc_dist": "保持社交距離",
+    "mask": "口罩配戴",
+    "sd": "社交距離",
+    "sding": "保持社交距離",
+    "lockdown": "封城",
+    "screening": "篩檢",
+    "broader": "邊境管制"
+  },
+  "stats": {
+    "cri": "信心區間",
+    "ci": "信賴區間",
+    "pi": "預測區間",
+    "mean": "平均值",
+    "std": "標準差",
+    "mle": "Maximium likelihood",
+    "avg_week": "週平均",
+    "avg_2week": "雙週平均",
+    "fore": "預測",
+    "est": "估計值",
+    "estimation": "估計"
   },
   "pages": {
     "world": "世界各地走勢",
-    "covid19_tw": "COVID-19 在台灣",
+    "covid19_tw": "COVID-19在台灣",
     "wuhan": "武漢封鎖",
     "learn": "流病小教室",
     "model": "傳染病模型",
     "resource": "相關資源",
     "about": "關於我們"
+  },
+  "title": {
+    "cov_ts": "COVID-19 時間序列",
+    "occur_all": "事件發生/累積, 全時間",
+    "more_sci": "COVID-19的模型與科學",
+    "more_dash": "更多Dashboards",
+    "dat_meth": "資料與研究方法",
+    "si_tw": "Serial Intervals, 台灣"
+  },
+  "misc": {
+    "indices": "流病指標",
+    "comparison": "比較",
+    "intervention": "感染控制",
+    "confirmed": "確診病例",
+    "epicurve": "流行曲線",
+    "data": "資料來源",
+    "meth": "研究方法"
   },
   "class": {
     "indices": "流病指標",
