@@ -7,10 +7,7 @@ const States = {
     S: "Susceptible", E: "Exposed", I: "Infectious", H: "Hospitalised", R: "Recovered", D: "Death"
   },
   Illness: {
-    N: "None", A: "Asymptomatic", M: "Mild", S: "Severe"
-  },
-  Awareness: {
-    U: "Unaware", A: "Aware", P: "Risk perceived", Q: "Isolated/Quarantined"
+    A: "Asymptomatic/No symptom", M: "Mild", S: "Severe"
   }
 };
 
@@ -44,16 +41,61 @@ class Event {
 
 Event.NullEvent = new Event("", Infinity);
 
-const Disease = {
-  findNext(ag, pars, t) {}
-};
 
-const Illness = {
-  findNext(ag, pars, t) {}
-};
-
-const Awareness = {
-  findNext(ag, pars, t) {}
+const Events = {
+  infected(ag) {
+    ag.State.Disease = States.Disease.E;
+  },
+  beingInfectious(ag, pars) {
+    ag.State.Disease = States.Disease.I;
+    ag.Infectiousness = Math.max(ag.Infectiousness, pars.betaAsym);
+  },
+  careSeeking(ag) {
+    ag.State.Disease = States.Disease.H;
+    ag.Infectiousness = 0;
+    ag.Signal = 1;
+  },
+  recovery(ag) {
+    ag.State.Disease = States.Disease.R;
+    ag.State.Illness = States.Illness.A;
+    ag.Signal = 0;
+    ag.Infectiousness = 0;
+  },
+  death(ag) {
+    ag.State.Disease = States.Disease.D;
+    ag.Signal = 0;
+  },
+  casualIllness(ag) {
+    ag.State.Illness = States.Illness.M;
+    ag.Signal = 1;
+  },
+  symptomRelief(ag) {
+    ag.State.Illness = States.Illness.A;
+    ag.Signal = 0;
+  },
+  symptomOnset(ag, pars) {
+    ag.State.Illness = States.Illness.M;
+    ag.Infectiousness = pars.beta;
+    ag.Signal = 1;
+  },
+  beingSerious(ag) {
+    ag.State.Illness = States.Illness.S;
+    ag.Signal = 1;
+  },
+  aware(ag) {
+    ag.State.Awareness = States.Awareness.A;
+  },
+  riskPercieved(ag) {
+    ag.State.Awareness = States.Awareness.P;
+  },
+  quarantined(ag) {
+    ag.State.Awareness = States.Awareness.Q;
+    ag.Infectiousness = 0;
+    ag.Signal = 1;
+  },
+  awarenessLost(ag) {
+    ag.State.Awareness = States.Awareness.U;
+  }
 };
 
 class Agent {
@@ -63,27 +105,28 @@ class Agent {
 
     this.State = {
       Disease: States.Disease.S,
-      Illness: States.Illness.A,
-      Awareness: States.Awareness.U
+      Illness: States.Illness.A
     };
 
     this.Next = {
       Disease: Event.NullEvent,
-      Illness: Event.NullEvent,
-      Awareness: Event.NullEvent
+      Illness: Event.NullEvent
     };
 
     this.Risk = 0;
     this.Infectiousness = 0;
 
+    this.Awareness = 0;
+
+
     this.Neighboiurs = [];
     this.History = {
       Time: 0,
-      Initialise: 0
+      Event: "Initialised"
     };
   }
 
-  transit(tr, ) {
+  findNext() {
 
   }
 }

@@ -67,10 +67,15 @@
         epiIndices: [
           get_page("indices.r0", "R0"),
           get_page("indices.rt", "Rt"),
-          get_page("indices.double", "double")
+          get_page("indices.double", "double"),
+          get_page("indices.incu", "double"),
+          get_page("indices.si", "double"),
+          get_page("indices.yield", "double")
         ],
         actions: [
-          get_page("actions.soc_dist", "R0")
+          get_page("actions.sding", "sding"),
+          get_page("actions.lockdown", "lockdown"),
+          get_page("actions.broader", "broader")
         ],
         activePages: {
           epiIndices: "https://covid-19-modelling.github.io/DashboardData/Docs/Learn_R0_en.html",
