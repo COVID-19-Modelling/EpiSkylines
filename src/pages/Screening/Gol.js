@@ -1,4 +1,3 @@
-const math = require("mathjs");
 const PD = require("probability-distributions");
 
 
@@ -8,29 +7,12 @@ const States = {
   },
   Illness: {
     A: "Asymptomatic/No symptom", M: "Mild", S: "Severe"
+  },
+  Visible: {
+    M: "Mild symptoms", S: "Severe symptoms", H: "Hospitalised", R: "Recovered", D: "Death", O: "Invisible"
   }
 };
 
-
-class Transition {
-  constructor(name, states, di, risk) {
-    this.Name = name;
-    this.States = states;
-    this.Sampler = di;
-    this.ByRisk = risk || false;
-  }
-
-  sample(ag, pars) {
-    let tte;
-    if (typeof this.Sampler === "string") {
-      tte = PD.rexp(1, pars[this.Sampler])[0];
-    } else {
-      tte = this.Sampler(pars);
-    }
-    if (this.ByRisk) tte /= ag.Risk;
-    return tte;
-  }
-}
 
 class Event {
   constructor(tr, tte) {
@@ -43,60 +25,30 @@ Event.NullEvent = new Event("", Infinity);
 
 
 const Events = {
-  infected(ag) {
-    ag.State.Disease = States.Disease.E;
-  },
-  beingInfectious(ag, pars) {
+  beingInfectious(ag) {
     ag.State.Disease = States.Disease.I;
-    ag.Infectiousness = Math.max(ag.Infectiousness, pars.betaAsym);
-  },
-  careSeeking(ag) {
-    ag.State.Disease = States.Disease.H;
-    ag.Infectiousness = 0;
-    ag.Signal = 1;
   },
   recovery(ag) {
     ag.State.Disease = States.Disease.R;
     ag.State.Illness = States.Illness.A;
-    ag.Signal = 0;
-    ag.Infectiousness = 0;
   },
   death(ag) {
     ag.State.Disease = States.Disease.D;
-    ag.Signal = 0;
   },
   casualIllness(ag) {
     ag.State.Illness = States.Illness.M;
-    ag.Signal = 1;
   },
   symptomRelief(ag) {
     ag.State.Illness = States.Illness.A;
-    ag.Signal = 0;
   },
-  symptomOnset(ag, pars) {
+  symptomOnset(ag) {
     ag.State.Illness = States.Illness.M;
-    ag.Infectiousness = pars.beta;
-    ag.Signal = 1;
   },
   beingSerious(ag) {
     ag.State.Illness = States.Illness.S;
-    ag.Signal = 1;
-  },
-  aware(ag) {
-    ag.State.Awareness = States.Awareness.A;
-  },
-  riskPercieved(ag) {
-    ag.State.Awareness = States.Awareness.P;
-  },
-  quarantined(ag) {
-    ag.State.Awareness = States.Awareness.Q;
-    ag.Infectiousness = 0;
-    ag.Signal = 1;
-  },
-  awarenessLost(ag) {
-    ag.State.Awareness = States.Awareness.U;
   }
 };
+
 
 class Agent {
   constructor(x, y) {
@@ -108,159 +60,230 @@ class Agent {
       Illness: States.Illness.A
     };
 
-    this.Next = {
-      Disease: Event.NullEvent,
-      Illness: Event.NullEvent
-    };
-
-    this.Risk = 0;
-    this.Infectiousness = 0;
+    this.NextEvents = [];
 
     this.Awareness = 0;
 
-
     this.Neighboiurs = [];
-    this.History = {
+    this.History = [{
       Time: 0,
       Event: "Initialised"
-    };
+    }];
   }
 
-  findNext() {
+  get Appearance() {
+    if (this.State.Disease === States.Disease.H) {
+      return States.Visible.H;
+    } else if (this.State.Disease === States.Disease.R) {
+      return States.Visible.R;
+    } else if (this.State.Disease === States.Disease.D) {
+      return States.Visible.D;
+    } else if (this.State.Illness === States.Illness.M) {
+      return States.Visible.M;
+    } else if (this.State.Illness === States.Illness.S) {
+      return States.Visible.S;
+    } else {
+      return States.Visible.O;
+    }
+  }
 
+  get Next() {
+    return this.NextEvents.reduce((prev, curr) => (prev.Time < curr.Time)? prev:curr, Event.NullEvent);
+  }
+
+  infected(by, t) {
+    this.State.Disease = States.Disease.E;
+    this.History.push({ Time: t, Event: "Infection", By: by });
+  }
+
+  isolated(t) {
+    this.State.Disease = States.Disease.H;
+    this.History.push({ Time: t, Event: "Isolated" });
+  }
+
+  findNext(pars, ti) {
+    this.NextEvents = [];
+    if (this.State.Disease === States.Disease.E) {
+      this.NextEvents.push(new Event("beingInfectious", PD.rexp(1, pars.r_act)[0] + ti));
+    } else if (this.State.Disease === States.Disease.I || this.State.Disease === States.Disease.H) {
+      if (this.State.Illness === States.Illness.A) {
+        this.NextEvents.push(new Event("symptomOnset", PD.rexp(1, pars.r_sym)[0] + ti));
+      } else if (this.State.Illness === States.Illness.M) {
+        this.NextEvents.push(new Event("beingSerious", PD.rexp(1, pars.r_serious)[0] + ti));
+      }
+      this.NextEvents.push(new Event("recovery", PD.rexp(1, pars.r_rec)[0] + ti));
+      this.NextEvents.push(new Event("death", PD.rexp(1, pars.r_die)[0] + ti));
+    } else if (this.State.Disease === States.Disease.S) {
+      if (this.State.Illness === States.Illness.A) {
+        this.NextEvents.push(new Event("casualIllness", PD.rexp(1, pars.r_ill)[0] + ti));
+      } else if (this.State.Illness === States.Illness.M) {
+        this.NextEvents.push(new Event("symptomRelief", PD.rexp(1, pars.r_relief)[0] + ti));
+      }
+    }
+  }
+
+  execute(evt) {
+    const tr = Events[evt.Transition];
+    if (tr !== undefined) {
+      tr(this);
+      this.History.push({Time: evt.TTE, Event: evt.Transition});
+    }
   }
 }
 
 
-class Disease {
+class COVID {
   constructor() {
     this.Parameters = [
-      { name: "Beta", value: 0.3, min: 0 },
-      { name: "Gamma", value: 0.2, min: 0 },
-      { name: "DeathRate", value: 0.02, min: 0 }
+      { key: "r_beta", name: "Beta", value: 0.3, min: 0 },
+      { key: "r_act", name: "Activation rate (Infectiousness)", value: 0.2, min: 0 },
+      { key: "r_sym", name: "Symptom onset rate", value: 0.02, min: 0 },
+      { key: "r_serious", name: "Severity increase rate", value: 0.1, min: 0 },
+      { key: "r_iso", name: "Care-seeking rate", value: 0.1, min: 0 },
+      { key: "r_ill", name: "Casual illness rate", value: 0.01, min: 0 },
+      { key: "r_relief", name: "Non-COV Symptom relief", value: 0.01, min: 0 },
+      { key: "r_die", name: "Death rate", value: 0.02, min: 0 },
+      { key: "r_rec", name: "Recovery rate", value: 0.06, min: 0 }
     ];
 
-    this.States = {
-      Sus: { Trans: ["Inc", "Dea"], Risk: 0 },
-      Inf: { Trans: ["Rec", "Dea"], Risk: 1 },
-      Rec: { Trans: ["Dea"], Risk: 0 }
-    };
-
-    this.Transitions = {
-      Inc: { Next: "Inf", Dist: "Beta", Risk: true },
-      Rec: { Next: "Rec", Dist: "Gamma" },
-      Dea: { Next: "Sus", Dist: "DeathRate" }
-    };
+    this.VisibleStates = Object.values(States.Visible);
 
     this.Agents = null;
-    this.NRow = 0;
+    this.NRow = 5;
+    this.NI0 = 5;
+    this.Last = {};
+    this.TestQueue = [];
+    this.TestRemain = 2;
   }
 
   get defaultParameters() {
     const pars = {};
-    this.Parameters.forEach(d => pars[d.name] = d.value);
+    this.Parameters.forEach(d => pars[d.key] = d.value);
     return pars;
   }
 
-  summarise(time) {
+  summarise(ti) {
     const rec = {};
-    rec.Time = time;
+    rec.Time = ti;
     if (!this.Agents) {
-      Object.keys(this.States).forEach(st => {
-        rec[st] = 0;
-      });
+      rec["Active cases"] = 0;
+      rec["Undetected"] = 0;
+      rec["Serious"] = 0;
+      rec["Mild"] = 0;
+      rec["Recovered"] = 0;
+      rec["Death"] = 0;
+      this.Last = rec;
       return rec;
     }
 
-    Object.keys(this.States).forEach(st => {
-      rec[st] = Object.values(this.Agents).filter(ag => ag.State === st).length;
-    });
+    rec["Active cases"] = Object.values(this.Agents).filter(ag => {
+      return ag.State.Disease === States.Disease.I || ag.State.Disease === States.Disease.H;
+    } ).length;
+
+    rec["Undetected"] = Object.values(this.Agents).filter(ag => ag.State.Disease === States.Disease.I).length;
+    rec["Serious"] = Object.values(this.Agents).filter(ag => ag.State.Illness === States.Illness.S).length;
+    rec["Mild"] = Object.values(this.Agents).filter(ag => ag.State.Illness === States.Illness.M).length;
+    rec["Recovered"] = Object.values(this.Agents).filter(ag => ag.State.Disease === States.Disease.R).length;
+    rec["Death"] = Object.values(this.Agents).filter(ag => ag.State.Disease === States.Disease.R).length;
+
+    this.Last = rec;
     return rec;
   }
 
-  initAgents(pars, nr) {
+  initAgents(pars, nr, n_inf) {
     this.NRow = nr;
     this.Agents = {};
 
-    let ag;
-    let sts = Object.keys(this.States);
-
-    const mid = Math.round(nr / 2);
     for (let x = 0; x < nr; x++) {
       for (let y = 0; y < nr; y++) {
-        ag = new Agent(x, y, x === mid && y === mid ? sts[1] : sts[0]);
-        ag.Infectiousness = this.States[ag.State].Risk;
+        let ag = new Agent(x, y);
+        this.findNeighbours(ag);
         this.Agents[ag.ID] = ag;
       }
     }
-    Object.values(this.Agents).forEach(ag => this.initAgent(ag, pars));
-  }
 
-  goto(pars, time0, time1) {
-    let time = time0;
-    let ag;
-    while (time < time1) {
-      ag = Object.values(this.Agents).reduce(function(res, obj) {
-        return obj.Next.Time < res.Next.Time ? obj : res;
-      });
-      time = ag.Next.Time;
+    const inf = PD.sample(Object.keys(this.Agents), n_inf);
 
-      if (time > time1) {
-        break;
+    Object.values(this.Agents).forEach(ag => {
+      if (inf.indexOf(ag.ID) >= 0) {
+        ag.State.Disease = States.Disease.I;
       }
-      this.goNext(ag, pars, time);
-    }
-  }
 
-  initAgent(ag, pars) {
-    this.updateRisk(ag);
-    this.findNext(ag, pars, 0);
-  }
-
-  rotateState(id, pars, time) {
-    const ag = this.Agents[id];
-    this.transition(ag, this.SW[ag.State], pars, time);
-  }
-
-  goNext(ag, pars, time) {
-    //const ag = this.Agents[pos[0] + "X" + pos[1]];
-    this.transition(ag, ag.Next.State, pars, time);
-  }
-
-  transition(ag, new_state, pars, time) {
-    const risk = this.States[new_state].Risk;
-    const riskChange = this.States[ag.State].Risk !== risk;
-    ag.State = new_state;
-    this.findNext(ag, pars, time);
-    if (riskChange) {
-      ag.Infectiousness = risk;
-      this.findNeighbours(ag).forEach(nei => {
-        this.updateRisk(nei);
-        this.findNext(nei, pars, time);
-      });
-    }
-  }
-
-  findNext(ag, pars, time) {
-    const st = ag.State;
-    let nxt = null, ti = Infinity;
-
-    this.States[st].Trans.forEach(tr => {
-      const val = this.Transitions[tr];
-      let t = -math.log(math.random()) / pars[val.Dist];
-      if (val.Risk) {
-        t /= ag.Risk;
-      }
-      if (t < ti) {
-        ti = t;
-        nxt = val.Next;
-      }
+      this.findNeighbours(ag);
+      ag.findNext(pars, 0);
     });
-    ag.Next = { State: nxt, Time: ti + time };
   }
 
-  updateRisk(ag) {
-    ag.Risk = math.sum(this.findNeighbours(ag).map(nei => nei.Infectiousness));
+
+  update(pars, t0, t1) {
+    Object.values(this.Agents).forEach(ag => {
+      this.updateAgent(ag, pars, t0, t1);
+    });
+    this.contact(pars, t0, t1);
+    this.detectCases(pars, t0, t1);
+  }
+
+  contact(pars, t0, t1) {
+    const dt = t1 - t0;
+    Object.values(this.Agents)
+      .filter(ag => ag.State.Disease === States.Disease.S)
+      .forEach(ag => {
+        const nei = ag.Neighboiurs.filter(nei => this.Agents[nei].State.Disease === States.Disease.I);
+        if (nei.length > 0) {
+          if (PD.rexp(1 , pars.r_beta * nei.length * dt)[0] < dt) {
+            ag.infected(PD.sample(nei, 1)[0], t1);
+            ag.findNext(pars, t1);
+          }
+        }
+      });
+  }
+
+  detectCases(pars, t0, t1) {
+    const p_h = -Math.expm1(-pars.r_iso * (t1 - t0));
+    const queue = [];
+
+    let cap = this.TestRemain;
+    if (cap === 0) return;
+
+    let sym_m = Object.values(this.Agents)
+      .filter(ag => ag.State.Illness === States.Illness.M)
+      .filter(() => Math.random() < p_h);
+    if (sym_m.length > 0) sym_m = PD.sample(sym_m);
+
+    let sym_s = Object.values(this.Agents)
+      .filter(ag => ag.State.Illness === States.Illness.S)
+      .filter(() => Math.random() < p_h);
+    if (sym_s.length > 0) sym_s = PD.sample(sym_s);
+
+    for (let i = 0; i < sym_s.length && queue.length < cap; i++) {
+      queue.push(sym_s[i]);
+    }
+    for (let i = 0; i < sym_m.length && queue.length < cap; i++) {
+      queue.push(sym_m[i]);
+    }
+
+    queue.forEach(ag => {
+      if (ag.State.Disease === States.Disease.I) {
+        ag.isolated(t1);
+        ag.findNext(pars, t1);
+      }
+
+    });
+
+    const found = queue.filter(ag => ag.State.Disease === States.Disease.H).length;
+    console.log(`Test ${ queue.length }, found ${ found }`);
+
+  }
+
+  updateAgent(ag, pars, t0, t1) {
+    let next = ag.Next;
+    let ti = t0;
+    while(next.TTE < t1) {
+      ag.execute(next);
+      ti = next.TTE;
+      ag.findNext(pars, ti);
+      next = ag.Next;
+    }
   }
 
   findNeighbours(ag) {
@@ -270,17 +293,13 @@ class Disease {
     const ri = x + 1 === border ? 0 : x + 1; // right index
     const bi = y + 1 === border ? 0 : y + 1; // bottom index
     const li = x - 1 < 0 ? border - 1 : x - 1; // left index
-    return [
-      this.Agents[li + "X" + ti], this.Agents[x + "X" + ti],
-      this.Agents[ri + "X" + ti], this.Agents[li + "X" + y],
-      this.Agents[ri + "X" + y], this.Agents[li + "X" + bi],
-      this.Agents[x + "X" + bi], this.Agents[ri + "X" + bi]
+    ag.Neighboiurs = [
+      li + "X" + ti, x + "X" + ti,
+      ri + "X" + ti, li + "X" + y,
+      ri + "X" + y, li + "X" + bi,
+      x + "X" + bi, ri + "X" + bi
     ];
   }
 }
 
-
-let evt = Event.NullEvent;
-
-console.log(evt);
-
+export { COVID };

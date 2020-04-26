@@ -196,46 +196,19 @@
             // this.statsCards[4].value = src.PercentageImport.Week;
           });
 
-        axios.get("https://covid19dashboard.cdc.gov.tw/dash3")
+        axios.get("https://covid-19-modelling.github.io/DashboardData/CDC/key.json")
           .then(res => {
-            const src = res.data[0];
-            this.statsCards[0].value = src.確診;
-            this.statsCards[1].value = src.死亡;
+            const src = res.data;
+
+            this.statsCards[0].value = src.Cases;
+            this.statsCards[1].value = src.Deaths;
+
+            this.statsCards[4].subvalue = `All time ${Math.round(src.Imported / (src.Cases) * 100)}% (${src.Imported}/${src.Cases})`;
+            this.statsCards[5].subvalue = `All time ${Math.round((src.Cases) / (src.Test) * 1000)/10}% (${src.Test} tested)`;
+
+            this.statsCards[4].value = `${Math.round(src.ImportedBi / (src.CasesBi) * 100)}% (${src.ImportedBi}/${src.CasesBi})`;
+            this.statsCards[5].value = `${Math.round((src.CasesBi) / (src.TestBi) * 1000)/10}% (${src.TestBi} tested)`;
           });
-
-        axios.all([
-          axios.get("https://covid19dashboard.cdc.gov.tw/dash4"),
-          axios.get("https://covid19dashboard.cdc.gov.tw/dash5")
-        ]).then(tables => {
-          const now = new Date();
-
-          let res = Object.values(tables[1].data);
-          let tests = Object.values(tables[0].data);
-
-          res = res.filter(d => {
-            let time = d["發病日"].split("/");
-            time = new Date(2020, + time[0] - 1, time[1]);
-            return now > time;
-          });
-
-          tests = tests.filter(d => {
-            let time = d["通報日"].split("/");
-            time = new Date(2020, + time[0] - 1, time[1]);
-            return now > time;
-          });
-
-          let out = res.reduce((a, b) => a + b.境外移入, 0), dom = res.reduce((a, b) => a + b.本土感染, 0);
-          let tested = tests.reduce((a, b) => a + b.Total, 0);
-          this.statsCards[4].subvalue = `All time ${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
-          this.statsCards[5].subvalue = `All time ${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
-
-          res = res.slice(-14); tests = tests.slice(-14);
-
-          out = res.reduce((a, b) => a + b.境外移入, 0); dom = res.reduce((a, b) => a + b.本土感染, 0);
-          tested = tests.reduce((a, b) => a + b.Total, 0);
-          this.statsCards[4].value = `${Math.round(out / (dom + out) * 100)}% (${out}/${dom + out})`;
-          this.statsCards[5].value = `${Math.round((dom + out) / (tested) * 1000)/10}% (${tested} tested)`;
-        });
 
       }
     }
