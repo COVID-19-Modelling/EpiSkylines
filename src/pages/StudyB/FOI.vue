@@ -74,12 +74,17 @@
     },
     methods: {
       extractSeries() {
+        let est = this.rawdata.Estimates.filter(ent => {
+          return (ent.Indices.filter(d => d._row === "kappa")[0].mean < 0.001) &
+            (ent.Indices.filter(d => d._row === "Rt")[0].lower > 0)
+        });
+
         ["beta", "kappa", "Rt"].forEach((key, i) => {
           let last = 0;
 
           this.charts[i].data = {
             location: this.rawdata.Location,
-            series: this.rawdata.Estimates
+            series: est
               .map(ent => {
                 return {
                   Date: ent.Date,

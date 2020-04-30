@@ -10,7 +10,7 @@
     "r0": "基本傳播數",
     "rt": "有效傳播數",
     "lat": "傳染力潛伏期",
-    "incu": "症狀潛伏期s",
+    "incu": "症狀潛伏期",
     "si": "世代間隔",
     "o2t": "症狀到檢驗",
     "do2t": "症狀到檢驗時間",
@@ -23,7 +23,8 @@
     "inc": "發生率",
     "noti": "通報數",
     "mor": "死亡率",
-    "fatal": "致死率"
+    "fatal": "致死率",
+    "cap": "醫療照護量能"
   },
   "actions": {
     "soc_dist": "保持社交距離",
@@ -62,7 +63,9 @@
     "more_sci": "COVID-19的模型與科學",
     "more_dash": "更多Dashboards",
     "dat_meth": "資料與研究方法",
-    "si_tw": "Serial Intervals, 台灣"
+    "si_tw": "Serial Intervals, 台灣",
+    "eva_lock": "封城的效果",
+    "key": "重要訊息"
   },
   "misc": {
     "indices": "流病指標",

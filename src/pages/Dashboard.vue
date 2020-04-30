@@ -114,18 +114,14 @@ export default {
             .nice()
             .range([self.height - self.margin.bottom, self.margin.top]);
 
-          self.xAxis = g => g
-            .attr("transform", `translate(0,${self.height - self.margin.bottom})`)
-            .call(d3.axisBottom(self.x).tickFormat(d3.timeFormat("%d-%b")));
+          self.xAxis = d3.axisBottom(self.x).ticks(self.width / 70).tickFormat(d3.timeFormat("%d-%b"));
+          self.yAxis = d3.axisLeft(self.y).ticks(10).tickFormat(d3.format(".2s"));
 
-          self.yAxis = g => g
-            .attr("transform", `translate(${self.margin.left},0)`)
-            .call(d3.axisLeft(self.y).ticks(10)
-              .tickFormat(d3.format(".2s")));
+          self.svg.append("g").attr("class", "xAxis")
+            .attr("transform", `translate(0,${self.height - self.margin.bottom})`);
 
-          self.svg.append("g").attr("class", "xAxis").call(self.xAxis);
-
-          self.svg.append("g").attr("class", "yAxis").call(self.yAxis);
+          self.svg.append("g").attr("class", "yAxis")
+            .attr("transform", `translate(${self.margin.left},0)`);
 
           self.svg
             .append("text")
@@ -149,8 +145,6 @@ export default {
           self.colours = d3.scaleOrdinal()
             .domain(["Confirmed", "Deaths", "Recovered"])
             .range(["#ffab16", "#a6333d", "#23ff4f"]);
-
-          self.update();
         },
         update: function(self) {
           const parseTime = d3.timeParse("%m/%d/%Y");
@@ -365,7 +359,6 @@ export default {
         this.statsCards[3].value = (() => {
           const ds = data[0].Series.slice(-3);
           const gr = (Math.log(ds[2]) - Math.log(ds[0])) / 2;
-          console.log(gr)
           return (Math.log(2) / gr).toFixed(1) + " Days";
         })();
 

@@ -22,7 +22,8 @@
     "inc": "Incidence",
     "noti": "Notification",
     "mor": "Mortality",
-    "fatal": "Fatality"
+    "fatal": "Fatality",
+    "cap": "Healthcare capacity"
   },
   "actions": {
     "soc_dist": "Social distancing",
@@ -47,12 +48,14 @@
     "estimation": "Estimation"
   },
   "title": {
-    "cov_ts": "COVID-19 time-serie",
+    "cov_ts": "COVID-19 time-series",
     "occur_all": "Occurrence by country/region, all time",
     "more_sci": "More science and models about COVID-19",
     "more_dash": "More dashboards / databases for COVID-19",
     "dat_meth": "Data and Methodology",
-    "si_tw": "Serial Intervals in Taiwan"
+    "si_tw": "Serial Intervals in Taiwan",
+    "eva_lock": "The effect of lockdown",
+    "key": "Key messages"
   },
   "pages": {
     "world": "World Forecasts",

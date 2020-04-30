@@ -88,8 +88,6 @@
           .attr("dy", "0.9em")
           .style("text-anchor", "middle")
           .text("Number");
-
-        self.update();
       },
       updateChart(self) {
         const parseTime = d3.timeParse("%Y-%m-%d");
@@ -135,8 +133,8 @@
                     .attr("fill", d => d.Sign === "+"?"red":"green");
 
                   g.append("line")
-                    .attr("y1", d => self.y(d.Value.lower))
-                    .attr("y2", d => self.y(d.Value.upper))
+                    .attr("y1", d => Math.max(0, self.y(d.Value.lower)))
+                    .attr("y2", d => Math.max(0, self.y(d.Value.upper)))
                     .attr("x1", d => self.x(parseTime(d.Date)))
                     .attr("x2", d => self.x(parseTime(d.Date)))
                     .style("stroke", d => d.Sign === "+"?"red":"green");
@@ -157,7 +155,7 @@
                     .attr("x2", d => self.x(parseTime(d.Date)))
                     .transition()
                     .duration(300)
-                    .attr("y1", d => self.y(d.Value.lower))
+                    .attr("y1", d => Math.max(0, self.y(d.Value.lower)))
                     .attr("y2", d => self.y(d.Value.upper))
                     .style("stroke", d => d.Sign === "+"?"red":"green");
                 });

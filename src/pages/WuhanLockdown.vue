@@ -1,17 +1,12 @@
 <template>
   <div class="row">
     <b-tabs class="col-12">
-      <b-tab title="Keys" active>
+      <b-tab :title="$t('title.dat_meth')" lazy>
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-12">
             <html-card
-                title="Abstract"
-                :url="sourceAbstract[$i18n.locale]"></html-card>
-          </div>
-          <div class="col-md-5">
-            <html-card
-                title="Key messages"
-                :url="sourceKey[$i18n.locale]"></html-card>
+                title="Benchmark epidemic of COVID-19" subTitle="after Wuhan's lockdown"
+                :url="sourceMethod[$i18n.locale]"></html-card>
           </div>
         </div>
       </b-tab>
@@ -23,15 +18,20 @@
         <prevalence></prevalence>
       </b-tab>
 
-      <b-tab title="The effect of lockdown" lazy>
+      <b-tab :title="$t('title.eva_lock')" lazy>
         <lockdown></lockdown>
       </b-tab>
-      <b-tab title="Methods" lazy>
+      <b-tab :title="$t('title.key')" active>
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-7">
             <html-card
-                title="Benchmark epidemic of COVID-19" subTitle="after Wuhan's lockdown"
-                :url="sourceMethod[$i18n.locale]"></html-card>
+                title="Abstract"
+                :url="sourceAbstract[$i18n.locale]"></html-card>
+          </div>
+          <div class="col-md-5">
+            <html-card
+                :title="$t('title.key')"
+                :url="sourceKey[$i18n.locale]"></html-card>
           </div>
         </div>
       </b-tab>

@@ -68,9 +68,10 @@
           get_page("indices.r0", "R0"),
           get_page("indices.rt", "Rt"),
           get_page("indices.double", "double"),
-          get_page("indices.incu", "double"),
-          get_page("indices.si", "double"),
-          get_page("indices.yield", "double")
+          get_page("indices.cap", "cap"),
+          get_page("indices.incu", ""),
+          get_page("indices.si", ""),
+          get_page("indices.yield", "")
         ],
         actions: [
           get_page("actions.sding", "sding"),
