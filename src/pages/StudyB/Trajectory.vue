@@ -4,7 +4,9 @@
            :footer-text="footerText"
            :chart-data="chartData"
            :draw-chart="drawChart"
-           :update-chart="updateChart">
+           :update-chart="updateChart"
+           :margin="margin"
+  >
   </d3-card>
 </template>
 <script>
@@ -32,7 +34,7 @@
       margin: {
         type: Object,
         default: () => {
-          return {top: 10, right: 30, bottom: 100, left: 100};
+          return {top: 10, right: 30, bottom: 100, left: 50};
         }
       },
       chartData: {
@@ -59,18 +61,15 @@
           .nice()
           .range([self.height - self.margin.bottom, self.margin.top]);
 
-        self.xAxis = g => g
-          .attr("transform", `translate(0,${self.height - self.margin.bottom})`)
-          .call(d3.axisBottom(self.x).tickFormat(d3.timeFormat("%d-%b")));
+        self.xAxis = d3.axisBottom(self.x).ticks(d3.timeDay.every(7)).tickFormat(d3.timeFormat("%d-%b"));
 
-        self.yAxis = g => g
-          .attr("transform", `translate(${self.margin.left},0)`)
-          .call(d3.axisLeft(self.y).ticks(10)
-            .tickFormat(d3.format("0.5f")));
+        self.yAxis = d3.axisLeft(self.y).ticks(8).tickFormat(d3.format("0.4f"));
 
-        self.svg.append("g").attr("class", "xAxis").call(self.xAxis);
+        self.svg.append("g").attr("class", "xAxis")
+          .attr("transform", `translate(0,${self.height - self.margin.bottom})`);
 
-        self.svg.append("g").attr("class", "yAxis").call(self.yAxis);
+        self.svg.append("g").attr("class", "yAxis")
+          .attr("transform", `translate(${self.margin.left},0)`);
 
         self.svg
           .append("text")
