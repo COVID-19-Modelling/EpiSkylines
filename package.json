@@ -16,7 +16,7 @@
     "d3": "^5.15.0",
     "es6-promise": "^4.2.4",
     "html-loader": "^1.0.0",
-    "mathjs": "^6.6.0",
+    "mathjs": "^7.5.1",
     "moment": "^2.24.0",
     "odex": "^2.0.4",
     "probability-distributions": "^0.9.1",
