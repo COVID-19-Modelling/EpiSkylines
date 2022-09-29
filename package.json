@@ -13,7 +13,7 @@
     "bootstrap-vue": "^2.5.0",
     "chartist": "^0.11.0",
     "core-js": "^3.6.4",
-    "d3": "^5.15.0",
+    "d3": "^7.6.1",
     "es6-promise": "^4.2.4",
     "html-loader": "^1.0.0",
     "mathjs": "^6.6.0",
